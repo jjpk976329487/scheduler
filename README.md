@@ -1,6 +1,4 @@
-Of course! This is a substantial and well-structured script. A good README will help users understand its power, how to use it, and what kind of inputs it expects.
-
-Here is a comprehensive README.md file for your script.
+Of course. Here is the formatted README.md file with improved structure, headings, code blocks, and tables for better readability.
 
 School Timetable Scheduler
 
@@ -85,7 +83,7 @@ IGNORE_WHEN_COPYING_START
 content_copy
 download
 Use code with caution.
-Bash
+Sh
 IGNORE_WHEN_COPYING_END
 
 Follow the interactive prompts to enter your school's data.
@@ -158,15 +156,15 @@ Console View
 A clear, grid-based timetable for each term of each generated schedule.
 
 --- Term 1 (Sched ID: 1) ---
-+-------------------+-------------------------------+-------------------------------+-------------------------------+-------------------------------+-------------------------------+
-| Period/Time       | Monday                        | Tuesday                       | Wednesday                     | Thursday                      | Friday                        |
-+===================+===============================+===============================+===============================+===============================+===============================+
-| P1                | English 10-1                  | Science 10                    | English 10-1                  | Science 10                    | English 10-1                  |
-| 08:30-09:30       | (Ms. Davis)                   | (Mr. Singh)                   | (Ms. Davis)                   | (Mr. Singh)                   | (Ms. Davis)                   |
-+-------------------+-------------------------------+-------------------------------+-------------------------------+-------------------------------+-------------------------------+
-| P2                | Math 10C                      | PE 10                         | Math 10C                      | PE 10                         | Math 10C                      |
-| 09:35-10:35       | (Mr. Smith)                   | (Mrs. Jones)                  | (Mr. Smith)                   | (Mrs. Jones)                  | (Mr. Smith)                   |
-+-------------------+-------------------------------+-------------------------------+-------------------------------+-------------------------------+-------------------------------+
++-------------+---------------+---------------+---------------+---------------+---------------+
+| Period/Time | Monday        | Tuesday       | Wednesday     | Thursday      | Friday        |
++=============+===============+===============+===============+===============+===============+
+| P1          | English 10-1  | Science 10    | English 10-1  | Science 10    | English 10-1  |
+| 08:30-09:30 | (Ms. Davis)   | (Mr. Singh)   | (Ms. Davis)   | (Mr. Singh)   | (Ms. Davis)   |
++-------------+---------------+---------------+---------------+---------------+---------------+
+| P2          | Math 10C      | PE 10         | Math 10C      | PE 10         | Math 10C      |
+| 09:35-10:35 | (Mr. Smith)   | (Mrs. Jones)  | (Mr. Smith)   | (Mrs. Jones)  | (Mr. Smith)   |
++-------------+---------------+---------------+---------------+---------------+---------------+
 ...
 IGNORE_WHEN_COPYING_START
 content_copy
