@@ -1,4 +1,4 @@
-# School Timetable Scheduler
+# School Timetable Scheduler (WORK IN PROGRESS)
 
 A comprehensive, command-line tool for generating valid and optimized weekly timetables for Elementary and High Schools. The scheduler is designed to handle a complex set of rules, constraints, and preferences to produce multiple distinct and valid timetables, complete with console and PDF outputs.
 
