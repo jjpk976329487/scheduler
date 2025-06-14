@@ -17,13 +17,12 @@ HIGH_SCHOOL_MIN_HOURS = 1000
 DAYS_OF_WEEK = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
 CREDITS_TO_HOURS_PER_CREDIT = 25
 TYPICAL_COURSE_CREDITS_FOR_ESTIMATE = 5
-MAX_SCHEDULE_GENERATION_ATTEMPTS = 20
+MAX_SCHEDULE_GENERATION_ATTEMPTS = 200
 MAX_DISTINCT_SCHEDULES_TO_GENERATE = 10 # Can be adjusted by user
 MIN_PREP_BLOCKS_PER_WEEK = 2
 MIN_ACCEPTABLE_SCHEDULE_COMPLETION_RATE = 0.75 # Proportion of *defined* course periods
 GRADES_REQUIRING_FULL_SCHEDULE = [10, 11, 12]
 PERIODS_PER_TYPICAL_OPTION_BLOCK = 5 # Default size for option blocks if not dynamically determined
-
 
 QUALIFIABLE_SUBJECTS = [
     "Math", "Science", "Social Studies", "English", "French",
@@ -32,34 +31,117 @@ QUALIFIABLE_SUBJECTS = [
 
 CORE_SUBJECTS_HS = ["English", "Math", "Science", "Social Studies"]
 
+# --- MODIFICATION: Added keywords to identify CTS courses ---
+CTS_KEYWORDS = [
+    "CTS", "Technology", "Computing", "Construction", "Design", "Fabrication",
+    "Financial", "Foods", "Legal", "Mechanics", "Psychology",
+    "Work Experience", "Special Projects", "Art", "Drama", "Music", "Outdoor Education"
+]
+
+COMBINABLE_PAIRS = [
+    ("English 10-2", "English 10-4"),
+    ("English 20-2", "English 20-4"),
+    ("English 30-2", "English 30-4"),
+    ("Social Studies 10-2", "Social Studies 10-4"),
+    ("Social Studies 20-2", "Social Studies 20-4"),
+    ("Math 10-3", "Math 10-4"),
+    ("Math 20-3", "Math 20-4"),
+    ("Math 30-3", "Math 30-4"),
+    ("Science 14", "Science 10-4"),
+    ("Science 24", "Science 20-4"),
+]
+
+
 HIGH_SCHOOL_COURSE_CREDITS_TEMPLATE = {
     # Grade 10
     "English 10-1": 5, "English 10-2": 5, "English 10-4": 5,
     "Social Studies 10-1": 5, "Social Studies 10-2": 5, "Social Studies 10-4": 5,
-    "Math 10C": 5, "Math 10-4": 5,
+    "Math 10C": 5, "Math 10-3": 5, "Math 10-4": 5,
     "Science 10": 5, "Science 14": 5, "Science 10-4": 5,
-    "Physical Education 10": 5, # Can also be 3, but 5 is common
-    "CALM 20": 3, # Often taken in Grade 10 or 11
+    "Physical Education 10": 5,
+    "CALM 20": 3,
     "Art 10": 3, "Drama 10": 3, "Music 10": 3, "French 10": 5,
-    "Construction Technologies 10": 5, # Example CTS
+    "Outdoor Education 10": 3, "Information Processing 10": 1,
+
+    # --- CTS Grade 10 ---
+    "Communication Technology 10": 5,
+    "Computing Science 10": 5,
+    "Construction Technologies 10": 5,
+    "Design Studies 10": 5,
+    "Fabrication Studies 10": 5,
+    "Financial Management 10": 5,
+    "Foods 10": 5,
+    "Legal Studies 10": 5,
+    "Mechanics 10": 5,
 
     # Grade 11
     "English 20-1": 5, "English 20-2": 5, "English 20-4": 5,
     "Social Studies 20-1": 5, "Social Studies 20-2": 5, "Social Studies 20-4": 5,
-    "Math 20-1": 5, "Math 20-2": 5, "Math 20-4": 5,
+    "Math 20-1": 5, "Math 20-2": 5, "Math 20-3": 5, "Math 20-4": 5,
     "Biology 20": 5, "Chemistry 20": 5, "Physics 20": 5, "Science 20": 5,
     "Science 24": 5, "Science 20-4": 5,
     "Art 20": 3, "Drama 20": 3, "Music 20": 3, "French 20": 5,
-    # Add more Grade 11 options/CTS as needed
+    "Outdoor Education 20": 3, "Information Processing 20": 1,
+
+    # --- CTS Grade 11 ---
+    "Communication Technology 20": 5,
+    "Computing Science 20": 5,
+    "Construction Technologies 20": 5,
+    "Design Studies 20": 5,
+    "Fabrication Studies 20": 5,
+    "Financial Management 20": 5,
+    "Foods 20": 5,
+    "Legal Studies 20": 5,
+    "Mechanics 20": 5,
+    "Personal Psychology 20": 3,
+    "Work Experience 25": 3,
 
     # Grade 12
     "English 30-1": 5, "English 30-2": 5, "English 30-4": 5,
     "Social Studies 30-1": 5, "Social Studies 30-2": 5,
-    "Math 30-1": 5, "Math 30-2": 5, "Math 30-4": 5,
+    "Math 30-1": 5, "Math 30-2": 5, "Math 30-3": 5, "Math 30-4": 5,
     "Biology 30": 5, "Chemistry 30": 5, "Physics 30": 5, "Science 30": 5,
     "Art 30": 3, "Drama 30": 3, "Music 30": 3, "French 30": 5,
-    # Add more Grade 12 options/CTS as needed
+    "Outdoor Education 30": 3, "Information Processing 30": 1,
+
+    # --- CTS Grade 12 ---
+    "Communication Technology 30": 5,
+    "Computing Science 30": 5,
+    "Construction Technologies 30": 5,
+    "Design Studies 30": 5,
+    "Fabrication Studies 30": 5,
+    "Financial Management 30": 5,
+    "Foods 30": 5,
+    "Legal Studies 30": 5,
+    "Mechanics 30": 5,
+    "General Psychology 30": 3,
+    "Special Projects 30": 5,
+    "Work Experience 35": 3,
 }
+
+CORE_COURSE_STREAMS = {
+    "English": {
+        10: ["English 10-1", "English 10-2", "English 10-4"],
+        11: ["English 20-1", "English 20-2", "English 20-4"],
+        12: ["English 30-1", "English 30-2", "English 30-4"],
+    },
+    "Social Studies": {
+        10: ["Social Studies 10-1", "Social Studies 10-2", "Social Studies 10-4"],
+        11: ["Social Studies 20-1", "Social Studies 20-2", "Social Studies 20-4"],
+        12: ["Social Studies 30-1", "Social Studies 30-2"],
+    },
+    "Math": {
+        10: ["Math 10C", "Math 10-3", "Math 10-4"],
+        11: ["Math 20-1", "Math 20-2", "Math 20-3", "Math 20-4"],
+        12: ["Math 30-1", "Math 30-2", "Math 30-3", "Math 30-4"],
+    },
+    "Science": {
+        10: ["Science 10", "Science 14", "Science 10-4"],
+        11: ["Biology 20", "Chemistry 20", "Physics 20", "Science 20", "Science 24", "Science 20-4"],
+        12: ["Biology 30", "Chemistry 30", "Physics 30", "Science 30"],
+    }
+}
+
 
 # --- Helper Functions ---
 def parse_time(time_str):
@@ -308,6 +390,7 @@ class SchoolScheduler:
         print(f"  - (The system will aim for at least {MIN_PREP_BLOCKS_PER_WEEK} prep blocks per teacher per week within their availability)")
         print("\n**Course/Subject Information:**")
         print(f"  - (The system will aim to schedule at least {MIN_ACCEPTABLE_SCHEDULE_COMPLETION_RATE*100:.0f}% of requested course periods per term)")
+        print("  - **(Optimizer)** If scheduling fails, it can auto-combine low-stream courses (e.g., Sci 14 + Sci 10-4) to improve success.")
         print("  **Elementary:** Subjects, Periods/week, Constraints (e.g., 'Math NOT P1')")
         print("  **High School:** Courses, Credits, Grade Level (10, 11, 12, or Mixed), Subject Area, Term, Constraints, Cohort Clashes")
         input("\nPress Enter to continue...")
@@ -347,7 +430,7 @@ class SchoolScheduler:
             end_time_str = self.get_input_with_default('end_time_str', "Daily School End Time (HH:MM AM/PM or HH:MM)", str)
             self.params['school_end_time'] = parse_time(end_time_str)
             if self.params['school_end_time'] and self.params.get('school_start_time') and time_to_minutes(self.params['school_end_time']) > time_to_minutes(self.params['school_start_time']):
-                self.session_cache['end_time_str'] = end_time_str; break
+                self.session_cache['end_time_str'] = end_date_str; break
             else: print("Invalid time format or end time not after start.")
         while True:
             lunch_start_str = self.get_input_with_default('lunch_start_time_str', "Lunch Start Time (HH:MM AM/PM or HH:MM)", str)
@@ -413,186 +496,303 @@ class SchoolScheduler:
         self._log_message(f"Total Annual Instructional Hours (per track): {total_annual_hours:.2f}.", "DEBUG")
         if total_annual_hours < self.params.get('min_instructional_hours',0):
             self._log_message(f"Hours ({total_annual_hours:.2f}) BELOW Alberta minimum ({self.params.get('min_instructional_hours',0)}).", "WARNING")
-
+    
+    # //////////////////////////////////////////////////////////////////
+    # /// MODIFIED FUNCTION
+    # //////////////////////////////////////////////////////////////////
     def _get_suggested_core_courses(self):
+        """
+        Suggests a list of courses based on core requirements and, crucially,
+        the available teacher and schedule capacity. Fills remaining capacity
+        with CTS courses instead of generic option blocks.
+        """
+        self._log_message("Suggesting courses based on teacher and schedule capacity.", "INFO")
         suggested_courses_all_grades = []
         num_terms = self.params.get('num_terms', 1)
+        num_p_day = self.params.get('num_periods_per_day', 1)
 
-        if self.params.get('school_type') != 'High School':
+        if self.params.get('school_type') != 'High School' or num_terms == 0:
+            return []
+
+        if not self.teachers_data:
+            self._log_message("Cannot suggest courses: No teachers defined.", "ERROR")
+            print("CRITICAL: No teachers have been defined. Cannot suggest a course list.")
+            return []
+            
+        total_teacher_capacity_per_week = sum(
+            max(0, sum(1 for day in DAYS_OF_WEEK for p_idx in range(num_p_day) if teacher.get('availability', {}).get(day, {}).get(p_idx, False)) - MIN_PREP_BLOCKS_PER_WEEK)
+            for teacher in self.teachers_data
+        )
+        grid_capacity_per_week = self.params.get('num_concurrent_tracks_per_period', 1) * num_p_day * len(DAYS_OF_WEEK)
+        effective_weekly_capacity_per_term = min(total_teacher_capacity_per_week, grid_capacity_per_week)
+        
+        self._log_message(f"Teacher capacity/wk: {total_teacher_capacity_per_week}. Grid capacity/wk: {grid_capacity_per_week}.", "DEBUG")
+        self._log_message(f"Effective schedulable periods/wk per term: {effective_weekly_capacity_per_term}", "INFO")
+        print(f"\nINFO: Based on teacher availability and schedule structure, a maximum of ~{effective_weekly_capacity_per_term} course periods can be scheduled per week.")
+
+        p_dur_min = self.params.get('period_duration_minutes', 1)
+        weeks_per_term = self.params.get('weeks_per_term', 18)
+        if self.params.get('scheduling_model') == "Full Year":
+            weeks_per_term = self.params.get('num_instructional_weeks', 36)
+
+        potential_courses = []
+        for subject, grades in CORE_COURSE_STREAMS.items():
+            for grade, courses in grades.items():
+                for course_name in courses:
+                    potential_courses.append({'name': course_name, 'subject': subject, 'grade': grade})
+
+        potential_courses.append({'name': 'CALM 20', 'subject': 'Other', 'grade': 10, '_required': True})
+        potential_courses.append({'name': 'Physical Education 10', 'subject': 'PE', 'grade': 10, '_required': True})
+
+        def get_priority(course):
+            name = course['name']
+            if course.get('_required'): return 0
+            if name.endswith("-1") or name.endswith("C") or name.endswith(" 10") or name.endswith(" 20") or name.endswith(" 30"): return 1
+            if name.endswith("-2") or name.endswith(" 14") or name.endswith(" 24"): return 2
+            return 3
+
+        potential_courses.sort(key=lambda c: (get_priority(c), c['grade']))
+
+        periods_used_by_term = defaultdict(int)
+        
+        def create_course_entry(course_name, subject_area, grade_level, term_num):
+            credits = self.high_school_credits_db.get(course_name)
+            if credits is None: return None
+            course_mins = credits * CREDITS_TO_HOURS_PER_CREDIT * 60
+            periods_year = math.ceil(course_mins / p_dur_min) if p_dur_min > 0 else 0
+            periods_week = math.ceil(periods_year / weeks_per_term) if weeks_per_term > 0 else 0
+            return {'name': course_name, 'credits': credits, 'grade_level': grade_level,
+                    'subject_area': subject_area, 'term_assignment': term_num,
+                    'periods_per_week_in_active_term': max(1, periods_week), 'parsed_constraints':[],
+                    'scheduling_constraints_raw': "", '_is_suggestion': True}
+
+        # Place required and core courses
+        cores_per_term = math.ceil(len(CORE_SUBJECTS_HS) / num_terms)
+        assigned_core_subjects_by_grade_term = defaultdict(lambda: defaultdict(set))
+        
+        # This combined loop handles all non-CTS courses first
+        for course_info in potential_courses:
+            term = 1 # Default term, can be adjusted
+            # Simple balancing: try to push some cores to the second term
+            if num_terms > 1 and course_info['subject'] in ["Science", "Social Studies"]:
+                term = 2
+            
+            entry = create_course_entry(course_info['name'], course_info['subject'], course_info['grade'], term)
+            if not entry: continue
+
+            # Check core course balancing
+            if entry['subject_area'] in CORE_SUBJECTS_HS:
+                if len(assigned_core_subjects_by_grade_term[entry['grade_level']][term]) >= cores_per_term:
+                    # Try to place in another term if this one is full of cores for this grade
+                    alt_term = next((t for t in range(1, num_terms + 1) if len(assigned_core_subjects_by_grade_term[entry['grade_level']][t]) < cores_per_term), None)
+                    if alt_term:
+                        term = alt_term
+                        entry['term_assignment'] = alt_term
+                    else:
+                        continue # Can't place this core course
+                assigned_core_subjects_by_grade_term[entry['grade_level']][term].add(entry['subject_area'])
+
+            periods_needed = entry['periods_per_week_in_active_term']
+            if periods_used_by_term[term] + periods_needed <= effective_weekly_capacity_per_term:
+                if not any(c['name'] == entry['name'] for c in suggested_courses_all_grades):
+                    suggested_courses_all_grades.append(entry)
+                    periods_used_by_term[term] += periods_needed
+                    self._log_message(f"Suggested '{entry['name']}' ({periods_needed} p/wk in T{term})", "DEBUG")
+
+        # --- Fill remaining capacity with CTS courses ---
+        all_cts_courses = [name for name in self.high_school_credits_db.keys() if any(kw.lower() in name.lower() for kw in CTS_KEYWORDS)]
+        
+        self._log_message(f"Capacity used by cores: {dict(periods_used_by_term)}", "DEBUG")
+        for term in range(1, num_terms + 1):
+            remaining_capacity = effective_weekly_capacity_per_term - periods_used_by_term[term]
+            self._log_message(f"Term {term} has {remaining_capacity} p/wk remaining for CTS/Options.", "INFO")
+            
+            # Find CTS courses not already suggested
+            suggested_names = {c['name'] for c in suggested_courses_all_grades}
+            available_cts_for_term = [name for name in all_cts_courses if name not in suggested_names]
+            random.shuffle(available_cts_for_term)
+
+            while remaining_capacity >= 3 and available_cts_for_term: # Min 3 pds/wk for a course
+                cts_name = available_cts_for_term.pop(0)
+                
+                # Create as a "Mixed" grade, "CTS" subject option
+                entry = create_course_entry(cts_name, "CTS", "Mixed", term)
+                if not entry: continue
+
+                periods_needed = entry['periods_per_week_in_active_term']
+                if remaining_capacity >= periods_needed:
+                    suggested_courses_all_grades.append(entry)
+                    periods_used_by_term[term] += periods_needed
+                    remaining_capacity -= periods_needed
+                    self._log_message(f"Filled capacity with CTS '{entry['name']}' ({periods_needed} p/wk in T{term})", "DEBUG")
+        
+        return suggested_courses_all_grades
+
+    # //////////////////////////////////////////////////////////////////
+    # /// MODIFIED FUNCTION
+    # //////////////////////////////////////////////////////////////////
+    def _get_suggested_grouped_courses(self):
+        """
+        Suggests a simplified list of courses by grouping streams into single
+        "Subject Blocks" and filling capacity with "CTS Option Blocks".
+        """
+        self._log_message("Suggesting GROUPED courses based on teacher and schedule capacity.", "INFO")
+        suggested_grouped_courses = []
+        num_terms = self.params.get('num_terms', 1)
+        num_p_day = self.params.get('num_periods_per_day', 1)
+
+        if self.params.get('school_type') != 'High School' or num_terms == 0 or not self.teachers_data:
+            return []
+
+        total_teacher_capacity_per_week = sum(
+            max(0, sum(1 for day in DAYS_OF_WEEK for p_idx in range(num_p_day) if teacher.get('availability', {}).get(day, {}).get(p_idx, False)) - MIN_PREP_BLOCKS_PER_WEEK)
+            for teacher in self.teachers_data
+        )
+        grid_capacity_per_week = self.params.get('num_concurrent_tracks_per_period', 1) * num_p_day * len(DAYS_OF_WEEK)
+        effective_weekly_capacity_per_term = min(total_teacher_capacity_per_week, grid_capacity_per_week)
+
+        p_dur_min = self.params.get('period_duration_minutes', 1)
+        weeks_per_term = self.params.get('weeks_per_term', 18)
+        if self.params.get('scheduling_model') == "Full Year":
+            weeks_per_term = self.params.get('num_instructional_weeks', 36)
+
+        def create_block_entry(block_name, subject_area, grade_level, term_num):
+            credits = TYPICAL_COURSE_CREDITS_FOR_ESTIMATE 
+            course_mins = credits * CREDITS_TO_HOURS_PER_CREDIT * 60
+            periods_year = math.ceil(course_mins / p_dur_min) if p_dur_min > 0 else 0
+            periods_week = math.ceil(periods_year / weeks_per_term) if weeks_per_term > 0 else 0
+            return {'name': block_name, 'credits': credits, 'grade_level': grade_level,
+                    'subject_area': subject_area, 'term_assignment': term_num,
+                    'periods_per_week_in_active_term': max(1, periods_week), 'parsed_constraints':[],
+                    'scheduling_constraints_raw': "", '_is_suggestion': True}
+
+        periods_used_by_term = defaultdict(int)
+        
+        for course_name, subject, grade in [('CALM 20', 'Other', 10), ('Physical Education 10', 'PE', 10)]:
+             term = 1
+             entry = create_block_entry(course_name, subject, grade, term)
+             if not entry: continue
+             periods_needed = entry['periods_per_week_in_active_term']
+             if periods_used_by_term[term] + periods_needed <= effective_weekly_capacity_per_term:
+                 suggested_grouped_courses.append(entry)
+                 periods_used_by_term[term] += periods_needed
+
+        cores_per_term = math.ceil(len(CORE_SUBJECTS_HS) / num_terms)
+        assigned_blocks_by_grade_term = defaultdict(lambda: defaultdict(int))
+
+        for term in range(1, num_terms + 1):
+            for grade in [10, 11, 12]:
+                shuffled_cores = random.sample(CORE_SUBJECTS_HS, len(CORE_SUBJECTS_HS))
+                for subject in shuffled_cores:
+                    if assigned_blocks_by_grade_term[grade][term] >= cores_per_term:
+                        break
+                    
+                    is_already_assigned = any(
+                        c['subject_area'] == subject and c['grade_level'] == grade 
+                        for c in suggested_grouped_courses
+                    )
+                    if is_already_assigned:
+                        continue
+
+                    block_name = f"{subject} {grade} Block"
+                    entry = create_block_entry(block_name, subject, grade, term)
+                    if not entry: continue
+                    
+                    periods_needed = entry['periods_per_week_in_active_term']
+                    if periods_used_by_term[term] + periods_needed <= effective_weekly_capacity_per_term:
+                        suggested_grouped_courses.append(entry)
+                        periods_used_by_term[term] += periods_needed
+                        assigned_blocks_by_grade_term[grade][term] += 1
+                        self._log_message(f"Suggested grouped block '{entry['name']}' ({periods_needed} p/wk in T{term})", "DEBUG")
+
+        # --- Fill remaining capacity with CTS Option Blocks ---
+        for term in range(1, num_terms + 1):
+            remaining_capacity = effective_weekly_capacity_per_term - periods_used_by_term[term]
+            if remaining_capacity > 0:
+                num_cts_blocks = math.floor(remaining_capacity / PERIODS_PER_TYPICAL_OPTION_BLOCK)
+                self._log_message(f"Term {term} has {remaining_capacity} p/wk remaining. Suggesting {num_cts_blocks} CTS block(s).", "INFO")
+                
+                for i in range(num_cts_blocks):
+                    option_name = f"Suggested CTS Option Block (T{term}, #{i+1})"
+                    # Use "CTS" as the subject area for qualification purposes
+                    option_entry = create_block_entry(option_name, "CTS", "Mixed", term)
+                    if option_entry:
+                        option_entry['periods_per_week_in_active_term'] = PERIODS_PER_TYPICAL_OPTION_BLOCK
+                        suggested_grouped_courses.append(option_entry)
+
+        return suggested_grouped_courses
+
+    # //////////////////////////////////////////////////////////////////
+    # /// MODIFIED FUNCTION
+    # //////////////////////////////////////////////////////////////////
+    def _suggest_new_courses_based_on_capacity(self, current_courses_list):
+        """Calculates available teacher capacity and suggests new CTS courses to fill gaps."""
+        self._log_message("Calculating teacher capacity to suggest new courses.", "INFO")
+
+        if not self.teachers_data:
+            self._log_message("No teachers defined, cannot calculate capacity.", "WARN")
+            print("Warning: No teachers defined. Cannot calculate available capacity.")
             return []
 
         num_p_day = self.params.get('num_periods_per_day', 1)
-        if not isinstance(num_p_day, int) or num_p_day <= 0: num_p_day = 1
-        p_dur_min = self.params.get('period_duration_minutes', 1)
-        if not isinstance(p_dur_min, int) or p_dur_min <= 0: p_dur_min = 60
+        total_teacher_capacity_per_week = sum(
+            max(0, sum(1 for day in DAYS_OF_WEEK for p_idx in range(num_p_day) if t.get('availability', {}).get(day, {}).get(p_idx, False)) - MIN_PREP_BLOCKS_PER_WEEK)
+            for t in self.teachers_data
+        )
+        self._log_message(f"Total available teacher teaching periods/week (after prep): {total_teacher_capacity_per_week}", "DEBUG")
+
+        scheduled_periods_per_week_by_term = defaultdict(int)
+        for course in current_courses_list:
+            scheduled_periods_per_week_by_term[course.get('term_assignment', 1)] += course.get('periods_per_week_in_active_term', 0)
+
+        self._log_message(f"Scheduled periods/week by term: {dict(scheduled_periods_per_week_by_term)}", "DEBUG")
+
+        newly_suggested_courses = []
+        max_schedulable_slots_per_week = self.params.get('num_concurrent_tracks_per_period', 1) * num_p_day * len(DAYS_OF_WEEK)
+        effective_capacity_per_week = min(total_teacher_capacity_per_week, max_schedulable_slots_per_week)
         
-        # weeks_course_dur depends on the scheduling model for calculating periods per week.
-        # If full year, it's total weeks. If semester/quarterly, it's weeks per term.
-        weeks_course_dur = self.params.get('weeks_per_term', 18) # Default to a semester length if not set
-        if self.params.get('scheduling_model') == "Full Year":
-            weeks_course_dur = self.params.get('num_instructional_weeks', 36) # Use full year weeks
-        if not isinstance(weeks_course_dur, int) or weeks_course_dur <= 0:
-            weeks_course_dur = 18 # Fallback
+        print(f"\nCapacity Analysis: Total weekly teacher periods available for teaching is ~{total_teacher_capacity_per_week}.")
 
-        self._log_message(f"Suggestion engine using: num_terms={num_terms}, p_dur_min={p_dur_min}, weeks_course_dur (for p/wk calc)={weeks_course_dur}", "DEBUG")
+        all_cts_courses = [name for name in self.high_school_credits_db.keys() if any(kw.lower() in name.lower() for kw in CTS_KEYWORDS)]
+        current_course_names = {c['name'] for c in current_courses_list}
+        available_cts = [name for name in all_cts_courses if name not in current_course_names]
+        random.shuffle(available_cts)
 
+        for term in range(1, self.params.get('num_terms', 1) + 1):
+            net_available_periods = effective_capacity_per_week - scheduled_periods_per_week_by_term[term]
+            self._log_message(f"Term {term}: Effective Capacity={effective_capacity_per_week}, Scheduled={scheduled_periods_per_week_by_term[term]}, Net Available={net_available_periods}", "DEBUG")
 
-        # --- Pass 1: Suggest Core Courses & Key Electives/Alternatives ---
-        # These are suggested primarily for the *first available term* or a sensible default term.
-        # The option slot filler (Pass 2) will handle filling remaining slots in all terms.
-        default_term_for_explicit_suggestions = 1
+            while net_available_periods >= 3 and available_cts:
+                cts_name = available_cts.pop(0)
+                
+                p_dur_min = self.params.get('period_duration_minutes', 60)
+                weeks_per_term = self.params.get('weeks_per_term', 18)
+                if self.params.get('scheduling_model') == "Full Year": weeks_per_term = self.params.get('num_instructional_weeks', 36)
+                
+                credits = self.high_school_credits_db.get(cts_name, TYPICAL_COURSE_CREDITS_FOR_ESTIMATE)
+                course_mins = credits * CREDITS_TO_HOURS_PER_CREDIT * 60
+                periods_year = math.ceil(course_mins / p_dur_min) if p_dur_min > 0 else 0
+                periods_week = math.ceil(periods_year / weeks_per_term) if weeks_per_term > 0 else 0
 
-        explicit_suggestions_data = [
-            # Grade 10
-            ("English 10-1", "English", 10), ("Social Studies 10-1", "Social Studies", 10),
-            ("Math 10C", "Math", 10), ("Science 10", "Science", 10),
-            ("CALM 20", "Other", 10), # Often taken in G10 or G11
-            ("Science 14", "Science", 10),
-            ("English 10-4", "English", 10), ("Math 10-4", "Math", 10),
-            ("Social Studies 10-4", "Social Studies", 10), ("Science 10-4", "Science", 10),
-            ("Physical Education 10", "PE", 10),
-
-            # Grade 11
-            ("English 20-1", "English", 11), ("Social Studies 20-1", "Social Studies", 11),
-            ("Math 20-1", "Math", 11),
-            ("Biology 20", "Science", 11), ("Chemistry 20", "Science", 11), 
-            ("Science 24", "Science", 11),
-            ("English 20-4", "English", 11), ("Math 20-4", "Math", 11),
-            ("Social Studies 20-4", "Social Studies", 11), ("Science 20-4", "Science", 11),
-            # CALM 20 could also be suggested for G11 if desired, or user can change grade
-
-            # Grade 12
-            ("English 30-1", "English", 12), ("Social Studies 30-1", "Social Studies", 12),
-            ("Math 30-1", "Math", 12),
-            ("Biology 30", "Science", 12), ("Chemistry 30", "Science", 12), 
-            ("English 30-4", "English", 12), ("Math 30-4", "Math", 12),
-        ]
+                if net_available_periods >= periods_week:
+                    suggestion_entry = {
+                        'name': cts_name, 'credits': credits, 'grade_level': "Mixed",
+                        'subject_area': "CTS", 'term_assignment': term,
+                        'assigned_teacher_name': None, 
+                        'periods_per_year_total_instances': periods_year,
+                        'periods_per_week_in_active_term': max(1, periods_week),
+                        'scheduling_constraints_raw': "", 'parsed_constraints': [],
+                        '_is_suggestion': True, '_is_one_credit_buffer_item': False
+                    }
+                    newly_suggested_courses.append(suggestion_entry)
+                    net_available_periods -= periods_week
+                    self._log_message(f"Suggesting new CTS course '{cts_name}' for Term {term}.", "INFO")
+                else:
+                    # Put it back if it's too big for the remaining space
+                    available_cts.insert(0, cts_name)
+                    break # Break if the next one is too big
         
-        # Add Physics as alternatives if Bio/Chem are already taken by a grade or for variety
-        # This part is tricky for auto-suggestion as it depends on student pathways.
-        # For now, sticking to Bio/Chem as primary science suggestions past Science 10/14/24. User can add Physics.
-
-        for course_name, subject_area, grade_level in explicit_suggestions_data:
-            credits = self.high_school_credits_db.get(course_name)
-            if credits is None:
-                self._log_message(f"INFO: Explicitly suggested course '{course_name}' not in credit DB. Skipping this suggestion.", "INFO")
-                continue
-
-            course_mins_total = credits * CREDITS_TO_HOURS_PER_CREDIT * 60
-            
-            # periods_per_year_total_instances: How many periods the course would take if it ran 1 period/day for its duration
-            periods_per_year_total_instances = math.ceil(course_mins_total / p_dur_min) if p_dur_min > 0 else course_mins_total
-            
-            # periods_per_week_in_active_term: How many periods per week this course needs *during the term(s) it is taught*.
-            # weeks_course_dur is already set to weeks_per_term or num_instructional_weeks based on model.
-            periods_per_week_active_term = math.ceil(periods_per_year_total_instances / weeks_course_dur) if weeks_course_dur > 0 else periods_per_year_total_instances
-            periods_per_week_active_term = max(1, periods_per_week_active_term if periods_per_year_total_instances > 0 else 0)
-
-            term_assignment_for_suggestion = default_term_for_explicit_suggestions
-            
-            # Ensure CALM is only suggested once if it appears for G10 and potentially G11 in future lists
-            if course_name == "CALM 20":
-                if any(s['name'] == "CALM 20" for s in suggested_courses_all_grades):
-                    continue # Already suggested CALM 20 (likely for G10)
-
-            is_already_suggested = any(
-                sugg['name'] == course_name and
-                sugg['grade_level'] == grade_level and
-                sugg['term_assignment'] == term_assignment_for_suggestion
-                for sugg in suggested_courses_all_grades
-            )
-            if is_already_suggested:
-                self._log_message(f"DEBUG: Course '{course_name}' Gr {grade_level} Term {term_assignment_for_suggestion} already in suggestion list. Skipping duplicate.", "TRACE")
-                continue
-
-            suggested_courses_all_grades.append({
-                'name': course_name, 'credits': credits, 'grade_level': grade_level,
-                'subject_area': subject_area, 'term_assignment': term_assignment_for_suggestion,
-                'assigned_teacher_name': None,
-                'periods_per_year_total_instances': periods_per_year_total_instances,
-                'periods_per_week_in_active_term': periods_per_week_active_term,
-                'scheduling_constraints_raw': "", 'parsed_constraints': [], '_is_suggestion': True,
-                '_is_one_credit_buffer_item': credits == 1, # Should be false for these suggestions
-                '_is_one_credit_buffer_item_from_suggestion': credits == 1
-            })
-            self._log_message(f"DEBUG: Suggested (Pass 1): {course_name} (Gr{grade_level}, {credits}cr, {periods_per_week_active_term}p/wk in T{term_assignment_for_suggestion})", "TRACE")
-
-
-        # --- Pass 2: Suggest Option/Elective Slots for Grades Requiring Full Schedule ---
-        total_periods_per_week_for_full_schedule = num_p_day * len(DAYS_OF_WEEK)
-
-        # Calculate periods already taken by explicit suggestions for each grade and term
-        core_periods_by_grade_term = defaultdict(lambda: defaultdict(int))
-        for c_sugg in suggested_courses_all_grades:
-            grade = c_sugg.get('grade_level')
-            term = c_sugg.get('term_assignment')
-            # Only count if it's not an "Option Slot" itself (safeguard if this runs multiple times)
-            if grade and term and not c_sugg.get('name', '').lower().startswith("option slot"):
-                core_periods_by_grade_term[grade][term] += c_sugg.get('periods_per_week_in_active_term', 0)
-
-        for grade_to_fill in GRADES_REQUIRING_FULL_SCHEDULE:
-            for term_num_fill in range(1, num_terms + 1): # Iterate through all terms
-                current_explicitly_suggested_periods = core_periods_by_grade_term[grade_to_fill][term_num_fill]
-                
-                remaining_periods_for_options = total_periods_per_week_for_full_schedule - current_explicitly_suggested_periods
-                self._log_message(f"DEBUG: Grade {grade_to_fill}, Term {term_num_fill}: Total slots={total_periods_per_week_for_full_schedule}, Explicitly Suggested={current_explicitly_suggested_periods}, Remaining for options={remaining_periods_for_options}", "TRACE")
-
-                option_slot_counter = 1
-                # Possible block sizes for options, prioritized (e.g., 5-period, then 3-period)
-                possible_option_block_sizes = [5, 3, 4, 2, 1]
-
-                while remaining_periods_for_options >= 1:
-                    periods_for_this_option_slot = 0
-                    for block_size in possible_option_block_sizes:
-                        if remaining_periods_for_options >= block_size:
-                            periods_for_this_option_slot = block_size
-                            break
-                    
-                    if periods_for_this_option_slot == 0: # If remaining is less than smallest block_size (e.g. < 1)
-                        periods_for_this_option_slot = remaining_periods_for_options # Take whatever is left
-
-                    if periods_for_this_option_slot <= 0: # Safety break
-                        break 
-                    
-                    option_name = f"Option Slot {option_slot_counter} (Gr {grade_to_fill} Mix)"
-                    
-                    # Estimate credits for this option slot
-                    # weeks_course_dur here should be weeks_per_term because options are typically term-based
-                    option_weeks = self.params.get('weeks_per_term', weeks_course_dur) # Use weeks_per_term for options
-                    if self.params.get('scheduling_model') == "Full Year": # If full year, option runs all year
-                        option_weeks = self.params.get('num_instructional_weeks', weeks_course_dur)
-
-
-                    option_total_minutes_estimate = periods_for_this_option_slot * option_weeks * p_dur_min
-                    option_credits_estimate = math.ceil(option_total_minutes_estimate / (60 * CREDITS_TO_HOURS_PER_CREDIT))
-                    option_credits_estimate = max(1, option_credits_estimate)
-
-                    suggested_courses_all_grades.append({
-                        'name': option_name,
-                        'credits': option_credits_estimate,
-                        'grade_level': "Mixed", # Options are typically mixed grade
-                        'subject_area': "Other",
-                        'term_assignment': term_num_fill,
-                        'assigned_teacher_name': None,
-                        'periods_per_year_total_instances': periods_for_this_option_slot * option_weeks, # Approx
-                        'periods_per_week_in_active_term': periods_for_this_option_slot,
-                        'scheduling_constraints_raw': "",
-                        'parsed_constraints': [],
-                        '_is_suggestion': True,
-                        '_is_one_credit_buffer_item': False,
-                        '_is_one_credit_buffer_item_from_suggestion': False
-                    })
-                    self._log_message(f"DEBUG:  Added Option Slot (Pass 2): '{option_name}' for Gr {grade_to_fill} context, Term {term_num_fill} ({periods_for_this_option_slot} p/wk, est. {option_credits_estimate} cr).", "TRACE")
-                    
-                    remaining_periods_for_options -= periods_for_this_option_slot
-                    option_slot_counter += 1
-                
-                if remaining_periods_for_options > 0 and remaining_periods_for_options < 1 : # tiny fractions
-                     self._log_message(f"DEBUG: Grade {grade_to_fill}, Term {term_num_fill}: Tiny fraction {remaining_periods_for_options} p/wk remaining, considered filled.", "TRACE")
-                elif remaining_periods_for_options >=1 :
-                     self._log_message(f"INFO:  Grade {grade_to_fill}, Term {term_num_fill}: {remaining_periods_for_options} p/wk potentially unfilled by auto-options. User may need to adjust or add more courses.", "INFO")
-
-        return suggested_courses_all_grades
+        return newly_suggested_courses
 
     def _edit_item_details(self, item_to_edit, get_item_details_func, item_name_singular):
         print(f"\n--- Editing {item_name_singular}: '{item_to_edit.get('name')}' ---")
@@ -607,56 +807,100 @@ class SchoolScheduler:
     def _get_list_data(self, data_key, item_name_singular, item_name_plural, get_item_details_func):
         print(f"\n--- {item_name_plural.capitalize()} Information ---")
         current_items = copy.deepcopy(self.session_cache.get(data_key, []))
+        processed_via_suggestion_workflow = False
+
         if data_key == 'teachers_data':
             num_p_day_current = self.params.get('num_periods_per_day', 1)
             if not isinstance(num_p_day_current, int) or num_p_day_current <= 0: num_p_day_current = 1
-            temp_reparsed_teachers = []
-            for item_t in current_items:
-                raw_avail_str_t = item_t.get('raw_availability_str', "")
-                item_t['availability'] = parse_teacher_availability(raw_avail_str_t, num_p_day_current)
-                temp_reparsed_teachers.append(item_t)
-            current_items = temp_reparsed_teachers
+            current_items = [
+                {**t, 'availability': parse_teacher_availability(t.get('raw_availability_str', ""), num_p_day_current)}
+                for t in current_items
+            ]
 
         if data_key == 'courses_data_raw_input' and self.params.get('school_type') == 'High School' and not current_items:
+            processed_via_suggestion_workflow = True
             initial_suggestions = self._get_suggested_core_courses()
+            
             if initial_suggestions:
-                print("\n--- Suggested Core Courses & Option Slots (auto-filled based on setup) ---")
+                print("\n--- Suggested Courses & CTS Options (auto-filled based on teacher capacity) ---")
                 for idx, sugg_item in enumerate(initial_suggestions):
-                    print(f"  {idx+1}. {sugg_item['name']} (Grade: {sugg_item['grade_level']}, Credits: {sugg_item['credits']}, Subj: {sugg_item['subject_area']}, Term: {sugg_item['term_assignment']}, Pds/Wk: {sugg_item.get('periods_per_week_in_active_term')})")
+                    print(f"  {idx+1}. {sugg_item['name']} (Grade: {sugg_item['grade_level']}, Subj: {sugg_item['subject_area']}, Term: {sugg_item['term_assignment']}, Pds/Wk: {sugg_item.get('periods_per_week_in_active_term')})")
+                
                 use_suggestions_key = f'{data_key}_include_suggestions_{random.randint(1000,9999)}'
-                include_suggestions = self.get_input_with_default(use_suggestions_key, "Include these auto-filled suggestions in your course list?", str, lambda x: x.lower() in ['yes', 'no'], choices=['yes', 'no'])
-                if include_suggestions.lower() == 'yes':
+                include_suggestions_choice = self.get_input_with_default(use_suggestions_key, "Include these auto-filled suggestions in your course list?", str, lambda x: x.lower() in ['yes', 'no'], choices=['yes', 'no'])
+                
+                if include_suggestions_choice.lower() == 'yes':
                     current_items.extend(initial_suggestions)
                     self._log_message(f"Added {len(initial_suggestions)} suggested courses/slots to the list.", "INFO")
+                else: 
+                    group_key = f'{data_key}_group_suggestions_{random.randint(1000,9999)}'
+                    if self.get_input_with_default(group_key, "\nRegenerate suggestions by grouping course streams (e.g., 'English 10-1/10-2' become one 'English 10 Block')?", str, choices=['yes', 'no']).lower() == 'yes':
+                        grouped_suggestions = self._get_suggested_grouped_courses()
+                        if grouped_suggestions:
+                            print("\n--- Regenerated List with Grouped Subject Blocks ---")
+                            current_items = grouped_suggestions
+                        else:
+                            print("Could not generate grouped suggestions (check teacher availability). Proceeding to manual entry.")
+                    
+                    else: 
+                        temp_list_to_prune = copy.deepcopy(initial_suggestions)
+                        delete_key = f'{data_key}_delete_from_sugg_{random.randint(1000,9999)}'
+                        if self.get_input_with_default(delete_key, "\nWould you like to manually build your list by deleting courses from the suggestions above?", str, choices=['yes', 'no']).lower() == 'yes':
+                            while True:
+                                print(f"\n--- Pruning Suggested List ({len(temp_list_to_prune)}) ---")
+                                for idx, item in enumerate(temp_list_to_prune):
+                                    print(f"  {idx+1}. {item.get('name')} (Gr: {item.get('grade_level')}, T: {item.get('term_assignment')})")
+                                
+                                del_input = input("Enter number to delete (or 'done' to finish): ").strip()
+                                if del_input.lower() == 'done' or not del_input: break
+                                
+                                try:
+                                    del_idx = int(del_input) - 1
+                                    if 0 <= del_idx < len(temp_list_to_prune):
+                                        deleted_item_name = temp_list_to_prune.pop(del_idx).get('name', 'Unknown item')
+                                        print(f"'{deleted_item_name}' removed from suggestions for now.")
+                                    else: print("Invalid number.")
+                                except ValueError: print("Invalid input.")
+                        
+                        current_items.extend(temp_list_to_prune)
+                        if temp_list_to_prune: print(f"\nAdded {len(temp_list_to_prune)} courses from the pruned suggestion list.")
+                        
+                        suggest_key = f'{data_key}_suggest_new_after_prune_{random.randint(1000,9999)}'
+                        if self.get_input_with_default(suggest_key, "\nSuggest additional CTS courses based on available teacher capacity?", str, choices=['yes', 'no']).lower() == 'yes':
+                            new_capacity_suggestions = self._suggest_new_courses_based_on_capacity(current_items)
+                            if new_capacity_suggestions:
+                                print("\n--- Suggested New CTS Courses (based on capacity) ---")
+                                for idx, sugg_item in enumerate(new_capacity_suggestions):
+                                    print(f"  {idx+1}. {sugg_item['name']} (Credits: {sugg_item['credits']}, Pds/Wk: {sugg_item.get('periods_per_week_in_active_term')})")
+                                
+                                add_sugg_key = f'{data_key}_add_capacity_sugg_{random.randint(1000,9999)}'
+                                if self.get_input_with_default(add_sugg_key, "Add these new courses to your course list?", str, choices=['yes', 'no']).lower() == 'yes':
+                                    current_items.extend(new_capacity_suggestions)
+                                    self._log_message(f"Added {len(new_capacity_suggestions)} capacity-based suggested courses.", "INFO")
+                                    print(f"Added {len(new_capacity_suggestions)} new courses.")
+                            else:
+                                print("\nNo further capacity available for new courses.")
         
         while True:
+            if processed_via_suggestion_workflow:
+                print("\n--- Main Course Editor ---")
+                print("You can now add custom courses, edit details, or finish.")
+                processed_via_suggestion_workflow = False 
+
             print(f"\n--- Current {item_name_plural} ({len(current_items)}) ---")
             if data_key == 'courses_data_raw_input':
                 grade_counts = defaultdict(int)
                 for item in current_items:
                     grade = item.get('grade_level')
-                    if isinstance(grade, int):
-                        grade_counts[grade] += 1
-                    elif isinstance(grade, str) and grade.lower() == "mixed":
-                        grade_counts['Mixed'] += 1
-                    else: # Handles None, empty string, or other unexpected string grade_levels
-                        grade_counts['Other/Undefined'] += 1
+                    if isinstance(grade, int): grade_counts[grade] += 1
+                    elif isinstance(grade, str) and grade.lower() == "mixed": grade_counts['Mixed'] += 1
+                    else: grade_counts['Other/Undefined'] += 1
                 
-                grade_summary_parts = []
-
-                # Define a helper function for sorting grade keys
                 def sort_grade_keys(k):
-                    if isinstance(k, int):
-                        return (0, k)  # Sort integers first, by their value
-                    if k == "Mixed":
-                        return (1, k)  # Then "Mixed"
-                    if k == "Other/Undefined":
-                        return (2, k)  # Then "Other/Undefined"
-                    # Fallback for any other string keys (should be rare with current logic)
-                    return (3, str(k)) 
-
-                for g in sorted(grade_counts.keys(), key=sort_grade_keys): # Sort for consistent order
-                    grade_summary_parts.append(f"Grade {g}: {grade_counts[g]}")
+                    if isinstance(k, int): return (0, k)
+                    if k == "Mixed": return (1, k)
+                    return (2, str(k)) 
+                grade_summary_parts = [f"Grade {g}: {grade_counts[g]}" for g in sorted(grade_counts.keys(), key=sort_grade_keys)]
                 print(f"  Summary: {', '.join(grade_summary_parts)}")
             
             if not current_items: print(f"No {item_name_plural} defined yet.")
@@ -672,11 +916,23 @@ class SchoolScheduler:
                     print(f"  {idx+1}. {name_attr} {details_str}")
 
             list_action_key = f'{data_key}_list_action_{random.randint(1000,9999)}'
-            choices_for_list_action = ["Add new", "Edit existing", "Delete existing", "Clear all and start fresh", "Finish and use this list"]
-            if not current_items: choices_for_list_action = ["Add new", "Finish (empty list)"]
+            is_hs_courses = (data_key == 'courses_data_raw_input' and self.params.get('school_type') == 'High School')
+
+            if is_hs_courses:
+                choices_for_list_action = ["Add from template", "Add custom course/block", "Edit existing", "Delete existing", "Clear all", "Finish and use this list"]
+                if not current_items: choices_for_list_action = ["Add from template", "Add custom course/block", "Finish (empty list)"]
+            else:
+                choices_for_list_action = ["Add new", "Edit existing", "Delete existing", "Clear all", "Finish and use this list"]
+                if not current_items: choices_for_list_action = ["Add new", "Finish (empty list)"]
+
             list_action = self.get_input_with_default(list_action_key, f"Action for {item_name_plural}", str, choices=choices_for_list_action)
 
-            if list_action == "Add new":
+            if list_action == "Add from template" and is_hs_courses:
+                new_courses = self._add_courses_from_template(current_items)
+                if new_courses:
+                    current_items.extend(new_courses)
+                    print(f"\nAdded {len(new_courses)} new course(s) to the list.")
+            elif (list_action == "Add new") or (list_action == "Add custom course/block" and is_hs_courses):
                 print(f"\n-- Adding new {item_name_singular} --")
                 new_item_data = get_item_details_func(defaults=None)
                 if new_item_data: current_items.append(new_item_data)
@@ -686,8 +942,7 @@ class SchoolScheduler:
                 try:
                     edit_idx = int(edit_idx_str) - 1
                     if 0 <= edit_idx < len(current_items):
-                        edited_item = self._edit_item_details(current_items[edit_idx], get_item_details_func, item_name_singular)
-                        current_items[edit_idx] = edited_item
+                        current_items[edit_idx] = self._edit_item_details(current_items[edit_idx], get_item_details_func, item_name_singular)
                     else: print("Invalid number.")
                 except ValueError: print("Invalid input for number.")
             elif list_action == "Delete existing" and current_items:
@@ -700,16 +955,21 @@ class SchoolScheduler:
                         print(f"'{deleted_item_name}' deleted.")
                     else: print("Invalid number.")
                 except ValueError: print("Invalid input for number.")
-            elif list_action == "Clear all and start fresh": current_items = []; print(f"All {item_name_plural} cleared.")
-            elif list_action == "Finish and use this list" or list_action == "Finish (empty list)": break
+            elif list_action in ["Clear all", "Clear all and start fresh"]:
+                current_items = []
+                print(f"All {item_name_plural} cleared.")
+            elif list_action.startswith("Finish"):
+                break
         
         self.session_cache[data_key] = current_items
         print(f"\nFinalized {item_name_plural} list with {len(current_items)} entries.")
         return current_items
 
     def _get_teacher_details(self, defaults=None):
-        name = self.get_input_with_default(None, "Teacher Name", str, lambda x: len(x) > 0)
-        qualifications = []
+        name_default = defaults.get('name', '')
+        name = self.get_input_with_default(None, "Teacher Name", str, lambda x: len(x) > 0, default_value_override=name_default)
+        
+        qualifications = defaults.get('qualifications', []) if defaults else []
         print(f"Enter qualified subjects for {name} (comma-separated numbers or names from list, or 'done'):")
         while True:
             for i, subj_name in enumerate(QUALIFIABLE_SUBJECTS): print(f"  {i+1}. {subj_name}{' (already qualified)' if subj_name in qualifications else ''}")
@@ -735,7 +995,10 @@ class SchoolScheduler:
 
         num_p_day_for_parse = self.params.get('num_periods_per_day', 1)
         if not isinstance(num_p_day_for_parse, int) or num_p_day_for_parse <= 0: num_p_day_for_parse = 1
-        availability_str_input = self.get_input_with_default(None, f"Teacher {name} Availability (e.g., 'Unavailable Mon P1-P2', blank if always available)", str, allow_empty=True)
+        
+        availability_str_default = defaults.get('raw_availability_str', '') if defaults else ''
+        availability_str_input = self.get_input_with_default(None, f"Teacher {name} Availability (e.g., 'Unavailable Mon P1-P2', blank if always available)", str, allow_empty=True, default_value_override=availability_str_default)
+        
         parsed_availability_map = parse_teacher_availability(availability_str_input, num_p_day_for_parse)
         available_slots_count = 0
         for day_check in DAYS_OF_WEEK:
@@ -764,6 +1027,75 @@ class SchoolScheduler:
 
     def get_elementary_subjects(self):
         self.subjects_data = self._get_list_data('subjects_data', 'subject', 'subjects', self._get_elementary_subject_details)
+
+    def _add_courses_from_template(self, current_courses):
+        """
+        Displays a list of courses from the credits DB, allows the user to select
+        multiple, and then runs the detailed setup for each selected course.
+        Returns a list of newly configured course dictionaries.
+        """
+        newly_added_courses = []
+        print("\n--- Add Courses from Template ---")
+
+        while True: # Loop to allow adding multiple batches of courses
+            # Get a list of course names already in the schedule to avoid showing them as options
+            current_course_names = {c['name'].split(' (')[0].strip() for c in current_courses}
+            
+            # Create a list of available courses from the database that are not already added
+            available_courses_list = [
+                (name, credits) for name, credits in sorted(self.high_school_credits_db.items())
+                if name not in current_course_names and not name.lower().startswith("option slot")
+            ]
+
+            if not available_courses_list:
+                print("All courses from the template have already been added.")
+                break
+
+            print("\nAvailable courses to add from the database:")
+            for idx, (name, credits) in enumerate(available_courses_list):
+                print(f"  {idx+1:2d}. {name} ({credits} credits)")
+
+            selection_prompt = "\nEnter numbers of courses to add (comma-separated, e.g., 1, 4, 5), or 'done' to finish adding: "
+            user_input = input(selection_prompt).strip()
+
+            if user_input.lower() == 'done':
+                break
+            if not user_input:
+                continue
+
+            selected_indices = []
+            try:
+                selected_indices = [int(x.strip()) - 1 for x in user_input.split(',')]
+                # Validate indices
+                if not all(0 <= i < len(available_courses_list) for i in selected_indices):
+                    print("Error: One or more numbers are out of range.")
+                    continue
+            except ValueError:
+                print("Invalid input. Please enter numbers separated by commas.")
+                continue
+            
+            # Process each selected course
+            for index in sorted(list(set(selected_indices))): # Use set to handle duplicate inputs
+                course_name, course_credits = available_courses_list[index]
+                
+                print(f"\n-- Configuring '{course_name}' --")
+                
+                # The key step: call the detailed editor, but with pre-filled defaults
+                # for name and credits.
+                defaults_for_new_course = {'name': course_name, 'credits': course_credits}
+                new_course_details = self._get_high_school_course_details(defaults=defaults_for_new_course)
+                
+                if new_course_details:
+                    # Check for duplicates again before adding, just in case
+                    if any(c['name'] == new_course_details['name'] for c in current_courses + newly_added_courses):
+                        print(f"Warning: A course named '{new_course_details['name']}' already exists. Skipping this addition.")
+                    else:
+                        newly_added_courses.append(new_course_details)
+                        print(f"'{course_name}' configured and staged for addition.")
+                else:
+                    print(f"Configuration for '{course_name}' cancelled.")
+
+        return newly_added_courses
 
     def _get_high_school_course_details(self, defaults=None):
         if defaults is None: defaults = {}
@@ -795,16 +1127,16 @@ class SchoolScheduler:
         
         credits_default = defaults.get('credits')
         credits_from_db = self.high_school_credits_db.get(course_name) 
-        credits = credits_from_db if credits_from_db is not None and not course_name.lower().startswith("option slot") else credits_default 
+        credits = credits_from_db if credits_from_db is not None and not course_name.lower().startswith("suggested") else credits_default 
 
         if credits is None: credits = self.get_input_with_default(f"credits{prompt_key_suffix}", f"Credits for {course_name}", int, lambda x: x > 0)
         else: credits = self.get_input_with_default(f"credits{prompt_key_suffix}", f"Credits for {course_name}", int, lambda x: x > 0, default_value_override=credits)
         
         if credits is None: print(f"ERROR: Credits not determined for {course_name}."); return None
-        if credits != credits_from_db and not course_name.lower().startswith("option slot"): self.high_school_credits_db[course_name] = credits
+        if credits != credits_from_db and not course_name.lower().startswith("suggested"): self.high_school_credits_db[course_name] = credits
         
         is_one_credit_now = (credits == 1)
-        if is_one_credit_now and not defaults.get('_is_one_credit_buffer_item_from_suggestion', False) and not course_name.lower().startswith("option slot"): 
+        if is_one_credit_now and not defaults.get('_is_one_credit_buffer_item_from_suggestion', False) and not course_name.lower().startswith("suggested"): 
             return {'name': course_name, 'credits': credits, 'subject_area': subj_area, 'grade_level': grade_level, '_is_one_credit_buffer_item': True}
         
         periods_week_term = defaults.get('periods_per_week_in_active_term')
@@ -828,7 +1160,6 @@ class SchoolScheduler:
         if assign_slots_count > 0 and assign_slots_count != periods_week_term:
             self._log_message(f"WARN: For {course_name}, ASSIGNed slots ({assign_slots_count}) != calc p/wk ({periods_week_term}). Using ASSIGN count for p/wk.", "WARN")
             periods_week_term = assign_slots_count
-            # periods_year might also need adjustment if ASSIGN count dictates periods_week_term
             periods_year = periods_week_term * weeks_course_dur
 
 
@@ -847,20 +1178,25 @@ class SchoolScheduler:
     def get_high_school_courses(self):
         self._log_message("--- High School Course Management ---", "DEBUG")
         self.high_school_credits_db = copy.deepcopy(self.session_cache.get('high_school_credits_db', HIGH_SCHOOL_COURSE_CREDITS_TEMPLATE))
-        if not self.session_cache.get('hs_credit_db_modified_once', False):
-            print("Current HS Course Credits DB:"); [print(f"  {c}: {cr}") for c, cr in sorted(self.high_school_credits_db.items())]
-            if self.get_input_with_default('modify_credit_db_choice', "Modify credit DB?", str, lambda x: x.lower() in ['yes','no'], choices=['yes','no']).lower() == 'yes':
-                while True:
-                    c_name = input("Course name to add/modify credits (or 'done'): ").strip()
-                    if c_name.lower() == 'done': break
-                    if not c_name: continue
-                    try:
-                        c_cred = int(input(f"Credits for {c_name}: "))
-                        if c_cred <=0: print("Credits must be positive."); continue
-                        self.high_school_credits_db[c_name] = c_cred; print(f"'{c_name}' updated to {c_cred} credits in DB for this session.")
-                    except ValueError: print("Invalid credit number.")
-            self.session_cache['hs_credit_db_modified_once'] = True
+        
+        print("\n--- High School Course Credit Database ---")
+        print("Current HS Course Credits DB:")
+        [print(f"  {c}: {cr}") for c, cr in sorted(self.high_school_credits_db.items())]
+        
+        if self.get_input_with_default('modify_credit_db_choice', "Modify credit DB?", str, lambda x: x.lower() in ['yes','no'], choices=['yes','no']).lower() == 'yes':
+            while True:
+                c_name = input("Course name to add/modify credits (or 'done'): ").strip()
+                if c_name.lower() == 'done': break
+                if not c_name: continue
+                try:
+                    c_cred = int(input(f"Credits for {c_name}: "))
+                    if c_cred <=0: print("Credits must be positive."); continue
+                    self.high_school_credits_db[c_name] = c_cred
+                    print(f"'{c_name}' updated to {c_cred} credits in DB for this session.")
+                except ValueError: print("Invalid credit number.")
+        
         self.session_cache['high_school_credits_db'] = copy.deepcopy(self.high_school_credits_db)
+        
         defined_courses_from_helper = self._get_list_data('courses_data_raw_input', 'course/block', 'courses/blocks', self._get_high_school_course_details)
         self.courses_data = []
         one_credit_courses_buffer = copy.deepcopy(self.session_cache.get('one_credit_courses_buffer', []))
@@ -1023,10 +1359,9 @@ class SchoolScheduler:
         num_tracks = self.params.get('num_concurrent_tracks_per_period', 1)
         current_schedule = {t: {d: [[None]*num_tracks for _ in range(num_p_day)] for d in DAYS_OF_WEEK} for t in range(1, num_terms + 1)}
         
-        items_by_term = defaultdict(list) # This will store the full detail of courses for each term
+        items_by_term = defaultdict(list)
         source_data = self.subjects_data if self.params.get('school_type') == 'Elementary' else self.courses_data
         
-        # --- Critical input checks (early exit if fundamental data is missing/invalid) ---
         if not source_data: 
             self._log_message("No subjects/courses defined. Cannot generate schedule.", "ERROR")
             return None, self.current_run_log, False, {'overall_completion_rate': 0, 'unmet_grade_slots_count': float('inf'), 'unmet_prep_teachers_count': float('inf'), 'log_summary': ["No subjects/courses defined."]}
@@ -1034,7 +1369,6 @@ class SchoolScheduler:
             self._log_message("No teachers defined. Cannot generate schedule.", "ERROR")
             return None, self.current_run_log, False, {'overall_completion_rate': 0, 'unmet_grade_slots_count': float('inf'), 'unmet_prep_teachers_count': float('inf'), 'log_summary': ["No teachers defined."]}
 
-        # Populate items_by_term with deep copies to allow modification during scheduling
         for item_data_orig in source_data:
             item_data = copy.deepcopy(item_data_orig)
             if item_data is None : continue
@@ -1044,14 +1378,13 @@ class SchoolScheduler:
             for term_actual in terms_to_sched_in:
                 if term_actual > num_terms: continue
                 items_by_term[term_actual].append({
-                    **item_data, # Spread all original course data
-                    'teacher': None, # Will be assigned by scheduler
+                    **item_data, 
+                    'teacher': None, 
                     'periods_to_schedule_this_week': item_data.get('periods_per_week', item_data.get('periods_per_week_in_active_term', 0)),
-                    'constraints': item_data.get('parsed_constraints', []), # Ensure this is present
+                    'constraints': item_data.get('parsed_constraints', []), 
                     'type': 'subject' if is_elem else 'course',
-                    'placed_this_term_count': 0, # Tracks how many instances are placed
-                    'preferred_period_this_term': None, # Tracks if a consistent period is found
-                    'is_cts_course': "cts" in item_data.get('name','').lower() if not is_elem else False,
+                    'placed_this_term_count': 0, 
+                    'is_cts_course': "cts" in item_data.get('subject_area','').lower() if not is_elem else False,
                 })
 
         teacher_max_teaching_this_week = {}
@@ -1064,7 +1397,6 @@ class SchoolScheduler:
             teacher_max_teaching_this_week[teacher_name] = max_t
             if max_t < 0: self._log_message(f"WARN Teacher {teacher_name}: {total_avail_slots} avail, < {MIN_PREP_BLOCKS_PER_WEEK} prep. Max teach {max_t}. Cannot teach.", "WARN")
         
-        # Initialize success status and metrics for this attempt
         is_successful_attempt = True
         attempt_metrics = {
             'overall_completion_rate': 0.0,
@@ -1074,9 +1406,8 @@ class SchoolScheduler:
         }
         all_terms_overall_completion_rate = []
 
-        # --- Main Scheduling Loop (Term by Term) ---
         for term_idx in range(1, num_terms + 1):
-            term_log_messages = [] # Collect log messages for this term
+            term_log_messages = [] 
             current_term_course_list_for_scheduling = items_by_term[term_idx]
 
             teacher_busy_this_term, item_scheduled_on_day_this_term = defaultdict(set), defaultdict(set)
@@ -1086,7 +1417,21 @@ class SchoolScheduler:
             for item_sort in current_term_course_list_for_scheduling: 
                 (must_assign_items if any(c.get('type') == 'ASSIGN' for c in item_sort.get('constraints',[])) else flexible_items_all).append(item_sort)
             
-            # 1. Schedule "ASSIGN" items first (critical, so failures here are likely showstoppers)
+            grade_coverage = {g: {d: [False] * num_p_day for d in DAYS_OF_WEEK} for g in GRADES_REQUIRING_FULL_SCHEDULE}
+            
+            def update_grade_coverage(item_obj, day_name, p_idx, is_hs):
+                if not is_hs: return
+                item_grade = item_obj.get('grade_level')
+                grades_to_update = []
+                if item_grade == "Mixed":
+                    grades_to_update = GRADES_REQUIRING_FULL_SCHEDULE
+                elif item_grade in GRADES_REQUIRING_FULL_SCHEDULE:
+                    grades_to_update = [item_grade]
+                
+                for grade_val in grades_to_update:
+                    if grade_val in grade_coverage:
+                        grade_coverage[grade_val][day_name][p_idx] = True
+            
             for item in must_assign_items:
                 item_name, item_subj_area = item['name'], item.get('subject_area')
                 assign_constr = [c for c in item.get('constraints',[]) if c.get('type') == 'ASSIGN']
@@ -1094,12 +1439,11 @@ class SchoolScheduler:
                 
                 if not item_subj_area: 
                     term_log_messages.append(f"[ERROR] CRIT: ASSIGN item '{item_name}' missing subject. Cannot schedule term.")
-                    # Return immediately as this is a hard, unrecoverable failure for the current term
                     return current_schedule, self.current_run_log + term_log_messages, False, {'overall_completion_rate': 0, 'unmet_grade_slots_count': float('inf'), 'unmet_prep_teachers_count': float('inf'), 'log_summary': [f"ASSIGN item '{item_name}' missing subject."]}
                 
                 teacher_for_all = None
                 potential_teachers_for_assign = [t for t in self.teachers_data if self._is_teacher_qualified(t, item_subj_area)]
-                random.shuffle(potential_teachers_for_assign) # Randomize teacher selection for fairness
+                random.shuffle(potential_teachers_for_assign) 
                 for t_obj_cand in potential_teachers_for_assign:
                     cand_name = t_obj_cand['name']
                     if teacher_teaching_periods_this_week_for_term.get(cand_name,0) + num_assign_slots > teacher_max_teaching_this_week.get(cand_name, -1): continue
@@ -1124,7 +1468,9 @@ class SchoolScheduler:
                     for track_idx_assign in range(num_tracks):
                         if current_schedule[term_idx][day_c][period_c][track_idx_assign] is None:
                             if self._check_cohort_clash_in_slot(item_name, term_idx, day_c, period_c, current_schedule): continue
-                            current_schedule[term_idx][day_c][period_c][track_idx_assign] = (item_name, teacher_for_all); track_found_assign = True; slots_placed_ok_count +=1; break
+                            current_schedule[term_idx][day_c][period_c][track_idx_assign] = (item_name, teacher_for_all); 
+                            update_grade_coverage(item, day_c, period_c, self.params.get('school_type') == 'High School') 
+                            track_found_assign = True; slots_placed_ok_count +=1; break
                     
                     if not track_found_assign: 
                         term_log_messages.append(f"[ERROR] CRIT: No track in ASSIGN slot {day_c}-P{period_c+1} for '{item_name}'. Cannot schedule term.")
@@ -1135,87 +1481,82 @@ class SchoolScheduler:
                 teacher_teaching_periods_this_week_for_term[teacher_for_all] += num_assign_slots
                 term_log_messages.append(f"[DEBUG] ASSIGNED: '{item_name}' (T:{teacher_for_all}) to {num_assign_slots} slots. Load: {teacher_teaching_periods_this_week_for_term[teacher_for_all]}/{teacher_max_teaching_this_week.get(teacher_for_all, 'N/A')}")
             
-            # 2. Schedule "Flexible" items
             flexible_items_processed = sorted(flexible_items_all, key=lambda x: (x.get('periods_to_schedule_this_week',0), len(x.get('constraints',[]))), reverse=True)
             if attempt_seed_modifier > 0 : random.seed(datetime.datetime.now().microsecond + attempt_seed_modifier + term_idx); random.shuffle(flexible_items_processed)
             
-            period_indices_base = list(range(num_p_day))
             for item in flexible_items_processed:
                 item_name, item_subj_area = item['name'], item.get('subject_area')
                 not_constr = [c for c in item.get('constraints',[]) if c.get('type')=='NOT']
-                periods_to_place = item.get('periods_to_schedule_this_week',0); item_teacher = item.get('teacher'); item['preferred_period_this_term'] = item.get('preferred_period_this_term', None)
+                periods_to_place = item.get('periods_to_schedule_this_week',0); item_teacher = item.get('teacher')
                 
-                if not item_subj_area: 
-                    term_log_messages.append(f"[WARN] Flex item '{item_name}' missing subject. Skipping.")
-                    continue
+                if not item_subj_area: term_log_messages.append(f"[WARN] Flex item '{item_name}' missing subject. Skipping."); continue
                 if periods_to_place == 0: item['placed_this_term_count'] = 0; continue
                 
-                num_already_placed = item.get('placed_this_term_count', 0)
-                num_remaining_to_place = periods_to_place - num_already_placed
+                num_remaining_to_place = periods_to_place - item.get('placed_this_term_count', 0)
                 if num_remaining_to_place <= 0: continue
                 
-                item_specific_days_order = DAYS_OF_WEEK[:] # Create a mutable copy
-                is_3_credit_mwf = item.get('credits') == 3 and item.get('type') == 'course'
-                is_cts_tth = item.get('is_cts_course', False)
-                
-                # Apply scheduling preferences (MWF for 3-credit, T/Th for CTS)
-                preferred_days, other_days = [], []
-                if is_3_credit_mwf and is_cts_tth: preferred_days = ["Monday", "Wednesday", "Friday"]; term_log_messages.append(f"[TRACE] Course '{item_name}' (3cr & CTS), prefer MWF.")
-                elif is_3_credit_mwf: preferred_days = ["Monday", "Wednesday", "Friday"]; term_log_messages.append(f"[TRACE] Course '{item_name}' (3cr), prefer MWF.")
-                elif is_cts_tth: preferred_days = ["Tuesday", "Thursday"]; term_log_messages.append(f"[TRACE] Course '{item_name}' (CTS), prefer T/Th.")
-                
-                if preferred_days: 
-                    other_days = [d for d in DAYS_OF_WEEK if d not in preferred_days]
-                    random.shuffle(preferred_days)
-                    random.shuffle(other_days)
-                    item_specific_days_order = preferred_days + other_days
-                else: 
-                    random.shuffle(period_indices_base) # Shuffle periods if no specific preference
-                    item_specific_days_order = random.sample(DAYS_OF_WEEK, len(DAYS_OF_WEEK)) # Shuffle days
+                is_hs = self.params.get('school_type') == 'High School'
 
-                for i_instance in range(num_remaining_to_place):
-                    slot_found_this_instance = False
-                    # IMPORTANT: Use the potentially re-shuffled period_indices_base for each instance
-                    period_search_order = period_indices_base[:] 
-                    if item['preferred_period_this_term'] is not None: 
-                        # If a preferred period from a previous placement, try it first
-                        period_search_order = [item['preferred_period_this_term']] + [p for p in period_indices_base if p != item['preferred_period_this_term']]
+                for _ in range(num_remaining_to_place):
+                    candidate_slots = []
+                    item_grades = []
+                    if is_hs:
+                        item_grade_level = item.get('grade_level')
+                        if item_grade_level == "Mixed": item_grades = GRADES_REQUIRING_FULL_SCHEDULE
+                        elif item_grade_level in GRADES_REQUIRING_FULL_SCHEDULE: item_grades = [item_grade_level]
                     
-                    for day_name_flex in item_specific_days_order:
-                        if slot_found_this_instance: break
-                        if not self.params.get('multiple_times_same_day',True) and day_name_flex in item_scheduled_on_day_this_term.get(item_name,set()): continue
+                    for day_name in DAYS_OF_WEEK:
+                        if not self.params.get('multiple_times_same_day', True) and day_name in item_scheduled_on_day_this_term.get(item_name, set()): continue
                         
-                        for period_idx_flex in period_search_order:
-                            if slot_found_this_instance: break
-                            if any((nc.get('day')==day_name_flex or nc.get('day') is None) and nc.get('period')==period_idx_flex for nc in not_constr): continue
-                            if self._check_cohort_clash_in_slot(item_name, term_idx, day_name_flex, period_idx_flex, current_schedule): continue
+                        for p_idx in range(num_p_day):
+                            if any((nc.get('day') == day_name or nc.get('day') is None) and nc.get('period') == p_idx for nc in not_constr): continue
                             
-                            for track_idx_flex in range(num_tracks):
-                                if current_schedule[term_idx][day_name_flex][period_idx_flex][track_idx_flex] is None:
-                                    teacher_for_slot = self._find_qualified_teacher(item_subj_area, day_name_flex, period_idx_flex, teacher_busy_this_term, teacher_teaching_periods_this_week_for_term, teacher_max_teaching_this_week, item_teacher)
-                                    if teacher_for_slot:
-                                        if not item_teacher: item_teacher = teacher_for_slot; item['teacher'] = item_teacher # Assign teacher if not already assigned
-                                        if item_teacher == teacher_for_slot: # Ensure same teacher for multi-period courses
-                                            current_schedule[term_idx][day_name_flex][period_idx_flex][track_idx_flex] = (item_name, item_teacher)
-                                            teacher_busy_this_term[item_teacher].add((day_name_flex, period_idx_flex))
-                                            item_scheduled_on_day_this_term[item_name].add(day_name_flex)
-                                            teacher_teaching_periods_this_week_for_term[item_teacher] += 1
-                                            item['placed_this_term_count'] += 1
-                                            slot_found_this_instance = True
-                                            if item['preferred_period_this_term'] is None: item['preferred_period_this_term'] = period_idx_flex # Set preferred period after first placement
-                                            break # Found a track for this instance
-                            if slot_found_this_instance: break # Found a slot for this instance
-                        if slot_found_this_instance: break # Found a day for this instance
+                            has_empty_track = any(current_schedule[term_idx][day_name][p_idx][t] is None for t in range(num_tracks))
+                            if not has_empty_track: continue
+                            
+                            if self._check_cohort_clash_in_slot(item_name, term_idx, day_name, p_idx, current_schedule): continue
+                            
+                            if self._find_qualified_teacher(item_subj_area, day_name, p_idx, teacher_busy_this_term, teacher_teaching_periods_this_week_for_term, teacher_max_teaching_this_week, item_teacher) is None: continue
+                            
+                            score = 0
+                            if is_hs:
+                                for g in item_grades:
+                                    if not grade_coverage.get(g, {}).get(day_name, [])[p_idx]: score += 1
+                            
+                            candidate_slots.append({'day': day_name, 'period': p_idx, 'score': score})
                     
-                    if not slot_found_this_instance: 
-                        term_log_messages.append(f"[WARN] ALERT: No slot for instance #{num_already_placed + i_instance + 1} of '{item_name}'. Placed {item.get('placed_this_term_count',0)}/{periods_to_place}.")
-                        break # Cannot place this instance, stop trying for this item
-
+                    if not candidate_slots:
+                        term_log_messages.append(f"[WARN] ALERT: No valid slots found for instance of '{item_name}'. Placed {item.get('placed_this_term_count',0)}/{periods_to_place}.")
+                        break 
+                    
+                    random.shuffle(candidate_slots) 
+                    candidate_slots.sort(key=lambda x: x['score'], reverse=True)
+                    
+                    slot_found_this_instance = False
+                    for slot_info in candidate_slots:
+                        day_flex, p_idx_flex = slot_info['day'], slot_info['period']
+                        teacher_for_slot = self._find_qualified_teacher(item_subj_area, day_flex, p_idx_flex, teacher_busy_this_term, teacher_teaching_periods_this_week_for_term, teacher_max_teaching_this_week, item_teacher)
+                        
+                        if teacher_for_slot:
+                            if not item_teacher: item_teacher = teacher_for_slot; item['teacher'] = item_teacher
+                            
+                            if item_teacher == teacher_for_slot:
+                                for track_idx_flex in range(num_tracks):
+                                    if current_schedule[term_idx][day_flex][p_idx_flex][track_idx_flex] is None:
+                                        current_schedule[term_idx][day_flex][p_idx_flex][track_idx_flex] = (item_name, item_teacher)
+                                        teacher_busy_this_term[item_teacher].add((day_flex, p_idx_flex))
+                                        item_scheduled_on_day_this_term[item_name].add(day_flex)
+                                        teacher_teaching_periods_this_week_for_term[item_teacher] += 1
+                                        item['placed_this_term_count'] += 1
+                                        update_grade_coverage(item, day_flex, p_idx_flex, is_hs) 
+                                        slot_found_this_instance = True
+                                        break 
+                            if slot_found_this_instance: break
+                
                 final_placed_count = item.get('placed_this_term_count', 0)
                 if final_placed_count == periods_to_place: term_log_messages.append(f"[DEBUG] SCHED: Flex item '{item_name}' (T:{item_teacher or 'Unassign!'}) all {final_placed_count} pds.")
                 elif final_placed_count > 0 : term_log_messages.append(f"[WARN] PARTIAL: '{item_name}' (T:{item_teacher or 'Unassign!'}) {final_placed_count}/{periods_to_place}.")
             
-            # --- Post-Scheduling Validation & Metric Collection for the current term ---
             total_periods_needed_term = sum(it.get('periods_to_schedule_this_week',0) for it in current_term_course_list_for_scheduling); 
             total_periods_placed_term = sum(it.get('placed_this_term_count',0) for it in current_term_course_list_for_scheduling)
             
@@ -1226,77 +1567,45 @@ class SchoolScheduler:
                 if term_completion_rate < MIN_ACCEPTABLE_SCHEDULE_COMPLETION_RATE:
                     term_log_messages.append(f"[ERROR] CRIT (Term {term_idx}): Completion ({term_completion_rate*100:.2f}%) < min. Invalid.")
                     is_successful_attempt = False 
-            elif not current_term_course_list_for_scheduling: 
-                term_log_messages.append(f"[INFO] Term {term_idx}: No items.")
-            else: 
-                term_log_messages.append(f"[INFO] Term {term_idx}: All items 0 pds.")
+            elif not current_term_course_list_for_scheduling: term_log_messages.append(f"[INFO] Term {term_idx}: No items.")
+            else: term_log_messages.append(f"[INFO] Term {term_idx}: All items 0 pds.")
             
             all_terms_overall_completion_rate.append(term_completion_rate)
 
-            # Verify Prep Blocks for this term
             term_log_messages.append(f"[DEBUG] --- Verifying Prep Term {term_idx} ---")
             for teacher_check in self.teachers_data:
                 name_check = teacher_check['name']
                 actual_teaching_this_term = teacher_teaching_periods_this_week_for_term.get(name_check, 0)
-                total_personal_avail_this_config = 0
-                for day_avail_check in DAYS_OF_WEEK:
-                    for p_avail_check in range(num_p_day):
-                        if teacher_check.get('availability',{}).get(day_avail_check,{}).get(p_avail_check, False): 
-                            total_personal_avail_this_config +=1
+                total_personal_avail_this_config = sum(1 for d in DAYS_OF_WEEK for p in range(num_p_day) if teacher_check.get('availability',{}).get(d,{}).get(p, False))
                 actual_prep = total_personal_avail_this_config - actual_teaching_this_term
                 max_teach_allowed_for_teacher = teacher_max_teaching_this_week.get(name_check, -1)
                 term_log_messages.append(f"[TRACE] T {name_check}: Teaches {actual_teaching_this_term}, AvailMap {total_personal_avail_this_config}, MaxTeach {max_teach_allowed_for_teacher}, Prep {actual_prep} (Min: {MIN_PREP_BLOCKS_PER_WEEK})")
                 
                 if max_teach_allowed_for_teacher < 0 and actual_teaching_this_term > 0 : 
                     term_log_messages.append(f"[ERROR] CRIT (Term {term_idx}): Unscheduleable T {name_check} taught. Invalid.")
-                    is_successful_attempt = False
-                    attempt_metrics['unmet_prep_teachers_count'] += 1 # Accumulate across terms
+                    is_successful_attempt = False; attempt_metrics['unmet_prep_teachers_count'] += 1
                 elif actual_prep < MIN_PREP_BLOCKS_PER_WEEK: 
                     term_log_messages.append(f"[ERROR] CRIT (Term {term_idx}): T {name_check} has {actual_prep} prep, < {MIN_PREP_BLOCKS_PER_WEEK}. Invalid.")
-                    is_successful_attempt = False
-                    attempt_metrics['unmet_prep_teachers_count'] += 1 # Accumulate across terms
+                    is_successful_attempt = False; attempt_metrics['unmet_prep_teachers_count'] += 1
             term_log_messages.append(f"[DEBUG] Term {term_idx} prep blocks verified.")
 
-            # Verify Full Block Grades for this term (High School only)
             if self.params.get('school_type') == 'High School':
                 term_log_messages.append(f"[DEBUG] --- Verifying Full Block Grades {GRADES_REQUIRING_FULL_SCHEDULE} (Term {term_idx}) ---")
+                unmet_slots_for_all_grades = 0
                 for grade_to_check in GRADES_REQUIRING_FULL_SCHEDULE:
-                    grade_schedule_filled = {day: [False]*num_p_day for day in DAYS_OF_WEEK}
-                    for day_sch in DAYS_OF_WEEK:
-                        for period_sch in range(num_p_day):
-                            slot_has_course_for_grade = False
-                            for track_sch in range(num_tracks):
-                                scheduled_item_tuple = current_schedule[term_idx][day_sch][period_sch][track_sch]
-                                if scheduled_item_tuple:
-                                    full_item_details = None
-                                    for item_in_term_list in current_term_course_list_for_scheduling: 
-                                        if item_in_term_list['name'] == scheduled_item_tuple[0]:
-                                            full_item_details = item_in_term_list
-                                            break
-                                    if full_item_details:
-                                        item_grade_level = full_item_details.get('grade_level')
-                                        if item_grade_level == grade_to_check or item_grade_level == "Mixed":
-                                            grade_schedule_filled[day_sch][period_sch] = True
-                                            slot_has_course_for_grade = True
-                                            break 
-                            if slot_has_course_for_grade: continue 
-                    
-                    unmet_slots_for_this_grade = 0
                     for day_check_fill in DAYS_OF_WEEK:
                         for period_check_fill in range(num_p_day):
-                            if not grade_schedule_filled[day_check_fill][period_check_fill]:
+                            if not grade_coverage.get(grade_to_check, {}).get(day_check_fill, [])[period_check_fill]:
                                 term_log_messages.append(f"[ERROR] CRIT (Term {term_idx}): Grade {grade_to_check} no class {day_check_fill} P{period_check_fill+1}. Invalid.")
-                                unmet_slots_for_this_grade += 1
-                    if unmet_slots_for_this_grade > 0:
-                        is_successful_attempt = False
-                        attempt_metrics['unmet_grade_slots_count'] += unmet_slots_for_this_grade # Accumulate across terms and grades
-
+                                unmet_slots_for_all_grades += 1
+                if unmet_slots_for_all_grades > 0:
+                    is_successful_attempt = False
+                    attempt_metrics['unmet_grade_slots_count'] += unmet_slots_for_all_grades
                 term_log_messages.append(f"[DEBUG] Term {term_idx}: Full block schedule verified for Grades {GRADES_REQUIRING_FULL_SCHEDULE}.")
+
             term_log_messages.append(f"[DEBUG] Term {term_idx} scheduling completed and verified.")
-            
-            attempt_metrics['log_summary'].extend(term_log_messages) # Add term-specific logs to overall summary
+            attempt_metrics['log_summary'].extend(term_log_messages)
         
-        # Calculate overall completion rate across all terms
         if all_terms_overall_completion_rate:
             attempt_metrics['overall_completion_rate'] = sum(all_terms_overall_completion_rate) / len(all_terms_overall_completion_rate)
         
@@ -1305,8 +1614,93 @@ class SchoolScheduler:
         else:
             self._log_message("Full Schedule Generation Attempt Failed Validation.", "INFO")
 
-        # Return the schedule, its log, success status, and metrics
         return current_schedule, self.current_run_log + attempt_metrics['log_summary'], is_successful_attempt, attempt_metrics
+    
+    def _attempt_course_combination(self):
+        """
+        Looks for predefined pairs of low-academic-stream courses in self.courses_data
+        and combines them into a single schedulable entity if they exist and are compatible.
+        Modifies self.courses_data and self.cohort_constraints in place.
+        Returns True if any courses were combined, False otherwise.
+        """
+        if self.params.get('school_type') != 'High School':
+            return False
+
+        courses_modified = False
+        courses_to_add = []
+        course_names_to_remove = set()
+        remap_for_cohorts = {} # {old_name: new_name}
+
+        for course1_name, course2_name in COMBINABLE_PAIRS:
+            # Find course objects, ensuring they are not already marked for removal by a previous pairing
+            course1_obj = next((c for c in self.courses_data if c['name'] == course1_name and c['name'] not in course_names_to_remove), None)
+            course2_obj = next((c for c in self.courses_data if c['name'] == course2_name and c['name'] not in course_names_to_remove), None)
+
+            if not course1_obj or not course2_obj:
+                continue # One or both courses not in the list for this run
+
+            if course1_obj.get('term_assignment') != course2_obj.get('term_assignment'):
+                self._log_message(f"Cannot combine '{course1_name}' and '{course2_name}': they are in different terms.", "WARN")
+                continue
+            
+            if any(con['type'] == 'ASSIGN' for con in course1_obj.get('parsed_constraints', [])) or \
+               any(con['type'] == 'ASSIGN' for con in course2_obj.get('parsed_constraints', [])):
+                self._log_message(f"Cannot combine '{course1_name}' and '{course2_name}': one has a fixed 'ASSIGN' constraint.", "WARN")
+                continue
+
+            periods_week = max(course1_obj['periods_per_week_in_active_term'], course2_obj['periods_per_week_in_active_term'])
+            if course1_obj['periods_per_week_in_active_term'] != course2_obj['periods_per_week_in_active_term']:
+                self._log_message(f"Combined course has different periods/week. Using max value: {periods_week}.", "WARN")
+
+            credits = max(course1_obj['credits'], course2_obj['credits'])
+            if course1_obj['credits'] != course2_obj['credits']:
+                 self._log_message(f"Combined course has different credits. Using max value: {credits}.", "WARN")
+
+            new_name = f"{course1_name} / {course2_name}"
+            self._log_message(f"OPTIMIZING: Combining '{course1_name}' and '{course2_name}' into new course '{new_name}'.", "INFO")
+
+            merged_constraints_raw_parts = []
+            if course1_obj.get('scheduling_constraints_raw'): merged_constraints_raw_parts.append(course1_obj['scheduling_constraints_raw'])
+            if course2_obj.get('scheduling_constraints_raw'): merged_constraints_raw_parts.append(course2_obj['scheduling_constraints_raw'])
+            merged_constraints_raw = "; ".join(merged_constraints_raw_parts)
+            
+            num_p_day = self.params.get('num_periods_per_day', 1)
+            parsed_constraints = parse_scheduling_constraint(merged_constraints_raw, num_p_day)
+            
+            weeks_per_term = self.params.get('weeks_per_term', 18)
+            if self.params.get('scheduling_model') == "Full Year": weeks_per_term = self.params.get('num_instructional_weeks', 36)
+
+            combined_course = {
+                'name': new_name, 'credits': credits, 'grade_level': "Mixed",
+                'assigned_teacher_name': None, 'subject_area': course1_obj['subject_area'],
+                'periods_per_year_total_instances': periods_week * weeks_per_term,
+                'periods_per_week_in_active_term': periods_week,
+                'scheduling_constraints_raw': merged_constraints_raw,
+                'parsed_constraints': parsed_constraints,
+                'term_assignment': course1_obj['term_assignment'],
+                '_is_one_credit_buffer_item': False
+            }
+            courses_to_add.append(combined_course)
+            course_names_to_remove.add(course1_name)
+            course_names_to_remove.add(course2_name)
+            remap_for_cohorts[course1_name] = new_name
+            remap_for_cohorts[course2_name] = new_name
+            courses_modified = True
+
+        if courses_modified:
+            self.courses_data = [c for c in self.courses_data if c['name'] not in course_names_to_remove]
+            self.courses_data.extend(courses_to_add)
+            
+            new_cohort_constraints = []
+            for group in self.cohort_constraints:
+                new_group = set(remap_for_cohorts.get(name, name) for name in group)
+                if len(new_group) > 1:
+                    new_cohort_constraints.append(list(new_group))
+            self.cohort_constraints = new_cohort_constraints
+            self._log_message(f"Updated cohort constraints after combination: {self.cohort_constraints}", "DEBUG")
+            print(f"Successfully combined {len(courses_to_add)} pair(s) of courses.")
+        
+        return courses_modified
 
     def _calculate_period_times_for_display(self):
         num_p, p_dur, b_dur = self.params.get('num_periods_per_day',0), self.params.get('period_duration_minutes',0), self.params.get('break_between_classes_minutes',0)
@@ -1332,7 +1726,6 @@ class SchoolScheduler:
             s_id, schedule, log = sched_detail['id'], sched_detail['schedule'], sched_detail['log']
             print(f"\n\n--- TIMETABLE - SCHEDULE ID: {s_id} ---")
             
-            # Display metrics for best failed attempt
             if s_id == "Best_Failed_Attempt" and 'metrics' in sched_detail:
                 metrics = sched_detail['metrics']
                 print(f"  (Failed Attempt Metrics: Overall Course Periods Placed: {metrics['overall_completion_rate']*100:.2f}%, Unmet Grade Slots: {metrics['unmet_grade_slots_count']}, Teachers with Insufficient Prep: {metrics['unmet_prep_teachers_count']})")
@@ -1350,12 +1743,22 @@ class SchoolScheduler:
                         cell_entries = []
                         for track_idx in range(num_tracks):
                             entry = term_data[day_name][p_idx][track_idx]; trk_lab = f"[Trk{track_idx+1}] " if num_tracks > 1 else ""
-                            if entry and entry[0]: cell_entries.append(f"{trk_lab}{entry[0][:25]}\n({entry[1][:10] if entry[1] else 'No T.'})")
-                            else: cell_entries.append(f"{trk_lab}---")
+                            if entry and entry[0]: 
+                                cell_entries.append(f"{trk_lab}{entry[0][:25]}\n({entry[1][:10] if entry[1] else 'No T.'})")
+                            else: 
+                                cell_entries.append(f"{trk_lab}---")
+                        
                         has_content = any(not e.endswith("---") for e in cell_entries)
-                        if num_tracks > 1 and has_content : row_content.append("\n---\n".join(cell_entries))
-                        elif num_tracks > 1 and not has_content: row_content.append(cell_entries[0]) 
-                        else: row_content.append(cell_entries[0])
+                        display_text = "\n---\n".join(cell_entries)
+                        if " / " in display_text:
+                            display_text = display_text.replace(" / ", "/\n")
+
+                        if num_tracks > 1 and has_content:
+                            row_content.append(display_text)
+                        elif num_tracks > 1 and not has_content: 
+                            row_content.append(cell_entries[0]) 
+                        else: 
+                            row_content.append(display_text)
                     table_data.append(row_content)
                 try:
                     from tabulate import tabulate; print(tabulate(table_data, headers="firstrow", tablefmt="grid"))
@@ -1395,7 +1798,9 @@ class SchoolScheduler:
                             cell_paras = []
                             for track_idx in range(num_tracks):
                                 entry = term_data[day_name][p_idx][track_idx]; trk_lab_pdf = f"<i>Trk{track_idx+1}:</i> " if num_tracks > 1 else ""
-                                if entry and entry[0]: cell_paras.append(Paragraph(f"{trk_lab_pdf}{entry[0]}<br/>({entry[1] if entry[1] else 'No T.'})", styles['Normal']))
+                                if entry and entry[0]: 
+                                    entry_name = entry[0].replace(" / ", "<br/>")
+                                    cell_paras.append(Paragraph(f"{trk_lab_pdf}{entry_name}<br/>({entry[1] if entry[1] else 'No T.'})", styles['Normal']))
                                 else: cell_paras.append(Paragraph(f"{trk_lab_pdf}---", styles['Normal']))
                             row_pdf.append(cell_paras)
                         pdf_data.append(row_pdf)
@@ -1403,7 +1808,7 @@ class SchoolScheduler:
                     table = Table(pdf_data, colWidths=col_w, repeatRows=1)
                     table.setStyle(TableStyle([('BACKGROUND',(0,0),(-1,0),colors.HexColor("#CCCCCC")),('ALIGN',(0,0),(-1,-1),'CENTER'),('VALIGN',(0,0),(-1,-1),'MIDDLE'),('FONTNAME',(0,0),(-1,-1),'Helvetica'),('FONTSIZE',(0,0),(-1,-1),7),('GRID',(0,0),(-1,-1),0.5,colors.black),('TOPPADDING',(0,0),(-1,-1),3),('BOTTOMPADDING',(0,0),(-1,-1),3)]))
                     story.append(table); story.append(Spacer(1, 0.2*72))
-                if i < num_s - 1: story.append(PageBreak()) # Add page break only between schedules
+                if i < num_s - 1: story.append(PageBreak())
             doc.build(story); print(f"Schedule(s) exported to {final_fn}")
         except ImportError: print("`reportlab` not found. PDF export failed.")
         except Exception as e: print(f"PDF export error: {e}"); traceback.print_exc()
@@ -1448,118 +1853,129 @@ class SchoolScheduler:
         num_schedules_key = f"num_schedules_to_generate_{random.randint(1000,9999)}"
         num_schedules_to_generate = self.get_input_with_default(num_schedules_key, f"How many distinct valid schedules to attempt (1-{MAX_DISTINCT_SCHEDULES_TO_GENERATE})?", int, lambda x: 1 <= x <= MAX_DISTINCT_SCHEDULES_TO_GENERATE, default_value_override=1)
         
-        self.generated_schedules_details = [] # This will store successful schedules OR the best failed one at the end
+        self.generated_schedules_details = [] 
         generated_schedule_hashes = set()
-
         best_failed_schedule_data = {
-            'schedule': None,
-            'log': [],
-            # Initialize metrics with worst possible values
+            'schedule': None, 'log': [],
             'metrics': {'overall_completion_rate': 0.0, 'unmet_grade_slots_count': float('inf'), 'unmet_prep_teachers_count': float('inf')}
         }
-
         total_attempts_for_all = MAX_SCHEDULE_GENERATION_ATTEMPTS * num_schedules_to_generate
+
+        original_courses_data = copy.deepcopy(self.courses_data)
+        original_cohort_constraints = copy.deepcopy(self.cohort_constraints)
+
         for attempt_num in range(total_attempts_for_all):
-            if len(self.generated_schedules_details) >= num_schedules_to_generate: 
-                self._log_message(f"Generated requested {num_schedules_to_generate} distinct schedules.", "INFO")
-                break # Exit if enough successful schedules are found
+            if len(self.generated_schedules_details) >= num_schedules_to_generate: break
             
-            print(f"\n--- Overall Schedule Gen Attempt {attempt_num + 1}/{total_attempts_for_all} (aiming for {num_schedules_to_generate}, found {len(self.generated_schedules_details)}) ---")
+            print(f"\n--- Overall Schedule Gen Attempt {attempt_num + 1}/{total_attempts_for_all} (found {len(self.generated_schedules_details)}) ---")
             
-            # Call the modified generate_single_schedule_attempt
             attempt_schedule, attempt_log, is_attempt_successful, attempt_metrics = \
                 self.generate_single_schedule_attempt(attempt_seed_modifier=attempt_num)
             
-            # Check for fundamental input errors (where generate_single_schedule_attempt returns None directly)
             if attempt_schedule is None:
-                print(f"CRITICAL ERROR: Fundamental input issues prevent scheduling. Check previous logs for details.")
-                self.current_run_log.extend(["--- Log from fundamental error ---"] + attempt_log[-5:])
-                return # Exit run_once immediately if fundamental error occurred
+                print("CRITICAL ERROR: Fundamental input issues prevent scheduling. Check logs."); return
 
             if is_attempt_successful:
-                try: 
-                    schedule_hash = hash(json.dumps(attempt_schedule, sort_keys=True))
-                except TypeError: 
-                    # Fallback if schedule contains non-JSON serializable/hashable elements
-                    schedule_hash = hash(str(attempt_schedule)) 
-                
+                schedule_hash = hash(json.dumps(attempt_schedule, sort_keys=True, default=str))
                 if schedule_hash not in generated_schedule_hashes:
                     s_id = len(self.generated_schedules_details) + 1
                     self.generated_schedules_details.append({'id': s_id, 'schedule': attempt_schedule, 'log': attempt_log})
                     generated_schedule_hashes.add(schedule_hash)
-                    print(f"SUCCESS: Found new distinct valid schedule (ID: {s_id}). Total distinct: {len(self.generated_schedules_details)}.")
+                    print(f"SUCCESS: Found new distinct valid schedule (ID: {s_id}).")
                 else: 
-                    print(f"INFO: Generated a schedule identical to a previous one. Trying again.")
-            else: # Attempt failed validation
-                print(f"INFO: Attempt {attempt_num + 1} did not yield a valid schedule. "
-                      f"(Completion: {attempt_metrics['overall_completion_rate']*100:.2f}%, "
-                      f"Unmet Grades: {attempt_metrics['unmet_grade_slots_count']}, "
-                      f"Unmet Prep: {attempt_metrics['unmet_prep_teachers_count']}).")
-                
-                # Logic to store the best failed attempt
-                current_is_better = False
-                # Primary sort: Fewer unmet grade slots are better
-                if attempt_metrics['unmet_grade_slots_count'] < best_failed_schedule_data['metrics']['unmet_grade_slots_count']:
-                    current_is_better = True
-                # Secondary sort: If unmet grade slots are equal, fewer unmet prep teachers are better
-                elif attempt_metrics['unmet_grade_slots_count'] == best_failed_schedule_data['metrics']['unmet_grade_slots_count']:
-                    if attempt_metrics['unmet_prep_teachers_count'] < best_failed_schedule_data['metrics']['unmet_prep_teachers_count']:
-                        current_is_better = True
-                    # Tertiary sort: If both unmet counts are equal, higher completion rate is better
-                    elif attempt_metrics['unmet_prep_teachers_count'] == best_failed_schedule_data['metrics']['unmet_prep_teachers_count']:
-                        if attempt_metrics['overall_completion_rate'] > best_failed_schedule_data['metrics']['overall_completion_rate']:
-                            current_is_better = True
-                
+                    print("INFO: Generated a schedule identical to a previous one. Trying again.")
+            else:
+                print(f"INFO: Attempt did not yield a valid schedule. (Completion: {attempt_metrics['overall_completion_rate']*100:.2f}%)")
+                current_is_better = (attempt_metrics['unmet_grade_slots_count'] < best_failed_schedule_data['metrics']['unmet_grade_slots_count']) or \
+                                   (attempt_metrics['unmet_grade_slots_count'] == best_failed_schedule_data['metrics']['unmet_grade_slots_count'] and \
+                                    attempt_metrics['unmet_prep_teachers_count'] < best_failed_schedule_data['metrics']['unmet_prep_teachers_count']) or \
+                                   (attempt_metrics['unmet_grade_slots_count'] == best_failed_schedule_data['metrics']['unmet_grade_slots_count'] and \
+                                    attempt_metrics['unmet_prep_teachers_count'] == best_failed_schedule_data['metrics']['unmet_prep_teachers_count'] and \
+                                    attempt_metrics['overall_completion_rate'] > best_failed_schedule_data['metrics']['overall_completion_rate'])
                 if current_is_better:
-                    best_failed_schedule_data['schedule'] = attempt_schedule
-                    best_failed_schedule_data['log'] = attempt_log
-                    best_failed_schedule_data['metrics'] = attempt_metrics # Store full metrics
+                    best_failed_schedule_data = {'schedule': attempt_schedule, 'log': attempt_log, 'metrics': attempt_metrics}
                     print("  This is the best failed attempt found so far.")
 
-                if attempt_log: self.current_run_log.extend(["--- Log from failed attempt (summary) ---"] + attempt_log[-5:]) # Append last few lines from failed log
+        if not self.generated_schedules_details:
+            best_failed_rate = best_failed_schedule_data['metrics'].get('overall_completion_rate', 0)
+            print(f"\nWARNING: Schedule generation failed. Best attempt placed only {best_failed_rate*100:.1f}% of course periods.")
+            
+            if self.params.get('school_type') == 'High School':
+                print("Scheduler will now attempt to improve the schedule by combining lower academic streams.")
+                if self._attempt_course_combination():
+                    print("\n--- RE-ATTEMPTING SCHEDULE GENERATION WITH COMBINED COURSES ---")
+                    for attempt_num in range(total_attempts_for_all):
+                        if len(self.generated_schedules_details) >= num_schedules_to_generate: break
+                        print(f"\n--- Overall Schedule Gen Attempt {attempt_num + 1}/{total_attempts_for_all} (OPTIMIZED RUN) ---")
+                        attempt_schedule, attempt_log, is_attempt_successful, attempt_metrics = \
+                            self.generate_single_schedule_attempt(attempt_seed_modifier=attempt_num + 999) 
+                        
+                        if attempt_schedule is None: print("CRITICAL ERROR during optimized run."); break
 
-        # --- End of all attempts: Display results ---
-        if not self.generated_schedules_details: 
-            print(f"\nERROR: Could not generate any valid schedules after {total_attempts_for_all} attempts. Review inputs and logs for constraint violations.")
+                        if is_attempt_successful:
+                            schedule_hash = hash(json.dumps(attempt_schedule, sort_keys=True, default=str))
+                            if schedule_hash not in generated_schedule_hashes:
+                                s_id = len(self.generated_schedules_details) + 1
+                                self.generated_schedules_details.append({'id': f"{s_id}-Optimized", 'schedule': attempt_schedule, 'log': attempt_log})
+                                generated_schedule_hashes.add(schedule_hash)
+                                print(f"SUCCESS: Found new distinct valid schedule (ID: {s_id}-Optimized).")
+                            else: print("INFO: Generated a schedule identical to a previous one. Trying again.")
+                        else:
+                            print(f"INFO: Optimized attempt did not yield a valid schedule. (Completion: {attempt_metrics['overall_completion_rate']*100:.2f}%)")
+                            current_is_better = (attempt_metrics['unmet_grade_slots_count'] < best_failed_schedule_data['metrics']['unmet_grade_slots_count']) or \
+                                   (attempt_metrics['unmet_grade_slots_count'] == best_failed_schedule_data['metrics']['unmet_grade_slots_count'] and \
+                                    attempt_metrics['unmet_prep_teachers_count'] < best_failed_schedule_data['metrics']['unmet_prep_teachers_count']) or \
+                                   (attempt_metrics['unmet_grade_slots_count'] == best_failed_schedule_data['metrics']['unmet_grade_slots_count'] and \
+                                    attempt_metrics['unmet_prep_teachers_count'] == best_failed_schedule_data['metrics']['unmet_prep_teachers_count'] and \
+                                    attempt_metrics['overall_completion_rate'] > best_failed_schedule_data['metrics']['overall_completion_rate'])
+                            if current_is_better:
+                                best_failed_schedule_data = {'schedule': attempt_schedule, 'log': attempt_log, 'metrics': attempt_metrics}
+                                print("  This is the new best failed attempt found so far.")
+                else:
+                    print("INFO: No suitable courses were found to combine for optimization.")
+            
+            # Restore original data for the next run_once() call
+            self.courses_data = original_courses_data
+            self.cohort_constraints = original_cohort_constraints
+
+        if not self.generated_schedules_details:
+            print(f"\nFINAL ERROR: Could not generate any valid schedules, even after optimization attempts.")
             if best_failed_schedule_data['schedule']:
                 print("\n--- Displaying Best Failed Schedule Attempt ---")
-                best_failed_schedule_data['id'] = "Best_Failed_Attempt" # Assign a pseudo-ID for display
-                self.generated_schedules_details.append(best_failed_schedule_data) # Add to list for display functions
+                best_failed_schedule_data['id'] = "Best_Failed_Attempt"
+                self.generated_schedules_details.append(best_failed_schedule_data)
             else:
-                print("No schedule could even be partially generated due to fundamental input issues or extreme constraints.")
-        else: 
+                self.current_run_log.extend(best_failed_schedule_data.get('log', [])[-5:])
+                print("No schedule could be generated. Check inputs/constraints. See log.")
+        else:
             print(f"\nSUCCESS: Generated {len(self.generated_schedules_details)} distinct valid schedule(s).")
         
-        # Display schedules in console and offer PDF export
-        if self.generated_schedules_details: 
+        if self.generated_schedules_details:
             self.display_schedules_console()
             export_key = f'export_pdf_choice_{random.randint(1000,9999)}'
-            if self.get_input_with_default(export_key, "\nExport generated schedule(s) to PDF?", str, lambda x: x.lower() in ['yes','no'], choices=['yes','no']).lower() == 'yes': 
+            if self.get_input_with_default(export_key, "\nExport generated schedule(s) to PDF?", str, lambda x: x.lower() in ['yes','no'], choices=['yes','no']).lower() == 'yes':
                 self.export_schedules_pdf()
         
-        # Offer to view the main run log
         log_main_key = f'view_main_run_log_{random.randint(1000,9999)}'
-        if self.get_input_with_default(log_main_key, "View main operational log for this run?", str, lambda x:x.lower() in ['yes','no'], choices=['yes','no']).lower()=='yes': 
-            print("\n--- Main Operational Log ---"); 
-            [print(msg) for msg in self.current_run_log]; 
-            print("--- End Main Log ---")
+        if self.get_input_with_default(log_main_key, "View main operational log?", str, lambda x: x.lower() in ['yes','no'], choices=['yes','no']).lower()=='yes':
+            print("\n--- Main Operational Log ---"); [print(msg) for msg in self.current_run_log]; print("--- End Main Log ---")
 
     def run(self):
         print("Welcome to the School Scheduler!")
         try:
-            # Attempt to load previous session cache
             if os.path.exists("scheduler_session_cache.tmp"):
                 with open("scheduler_session_cache.tmp", "r") as f: loaded_cache_raw = json.load(f)
                 self.session_cache = loaded_cache_raw
-                # Attempt to parse specific parameters from cached strings to correct types
                 param_keys_from_cache = {
                     'num_periods_per_day': int, 'min_instructional_hours': int, 'num_terms': int, 
-                    'weeks_per_term': int, 'instructional_days': int, 'num_instructional_weeks': int, 
-                    'break_between_classes_minutes': int, 'num_concurrent_tracks_per_period': int,
-                    'total_annual_instructional_hours': float, 'school_type': str, 'scheduling_model': str,
-                    'school_name': str, 'start_date_str': str, 'end_date_str': str, 'non_instructional_days_str': str, 
-                    'start_time_str': str, 'end_time_str': str, 'lunch_start_time_str': str, 'lunch_end_time_str': str,
-                    'multiple_times_same_day_choice': str}
+                    'weeks_per_term': int, 'instructional_days': int, 'num_instructional_weeks': int,
+                    'period_duration_minutes': int, 'break_between_classes_minutes': int, 
+                    'num_concurrent_tracks_per_period': int, 'total_annual_instructional_hours': float, 
+                    'school_type': str, 'scheduling_model': str, 'school_name': str, 
+                    'start_date_str': str, 'end_date_str': str, 'non_instructional_days_str': str, 
+                    'start_time_str': str, 'end_time_str': str, 'lunch_start_time_str': str, 
+                    'lunch_end_time_str': str, 'multiple_times_same_day_choice': str
+                }
                 for p_key, expected_type in param_keys_from_cache.items():
                     if p_key in self.session_cache:
                         try:
@@ -1569,10 +1985,8 @@ class SchoolScheduler:
                             self._log_message(f"Cache Load Error: param '{p_key}' val '{self.session_cache.get(p_key)}' to {expected_type.__name__}: {e}. Using default.", "WARN")
                             if p_key == 'num_periods_per_day': self.params[p_key] = 1 
                             elif p_key == 'num_terms': self.params[p_key] = 1 
-                # Load high school credits database
                 if 'high_school_credits_db' in self.session_cache: self.high_school_credits_db = copy.deepcopy(self.session_cache['high_school_credits_db'])
                 else: self.high_school_credits_db = copy.deepcopy(HIGH_SCHOOL_COURSE_CREDITS_TEMPLATE)
-                # Re-parse teacher availability based on loaded num_periods_per_day
                 if 'teachers_data' in self.session_cache and isinstance(self.session_cache['teachers_data'], list):
                     num_p_day_at_load = self.params.get('num_periods_per_day', 1)
                     if not isinstance(num_p_day_at_load, int):
@@ -1580,18 +1994,25 @@ class SchoolScheduler:
                         except (ValueError, TypeError): num_p_day_at_load = 1 
                     if num_p_day_at_load <= 0: num_p_day_at_load = 1 
                     
-                    re_parsed_teachers = []
-                    for teacher_entry in self.session_cache['teachers_data']:
-                        updated_teacher_entry = copy.deepcopy(teacher_entry)
-                        raw_avail_str = updated_teacher_entry.get('raw_availability_str', "")
-                        updated_teacher_entry['availability'] = parse_teacher_availability(raw_avail_str, num_p_day_at_load)
-                        re_parsed_teachers.append(updated_teacher_entry)
-                    self.session_cache['teachers_data'] = re_parsed_teachers
+                    self.session_cache['teachers_data'] = [
+                        {**t, 'availability': parse_teacher_availability(t.get('raw_availability_str', ""), num_p_day_at_load)}
+                        for t in self.session_cache['teachers_data']
+                    ]
                 self._log_message(f"Loaded previous session. num_periods={self.params.get('num_periods_per_day', 'N/A')}.", "INFO")
                 print("INFO: Loaded previous session data.")
-            else: self.session_cache = {}; self.high_school_credits_db = copy.deepcopy(HIGH_SCHOOL_COURSE_CREDITS_TEMPLATE); print("INFO: No previous session cache file found. Starting fresh.")
-        except json.JSONDecodeError as e: self.session_cache = {}; self.high_school_credits_db = copy.deepcopy(HIGH_SCHOOL_COURSE_CREDITS_TEMPLATE); print(f"WARN: Could not decode session cache ({e}). Starting fresh.")
-        except Exception as e_load: self.session_cache = {}; self.high_school_credits_db = copy.deepcopy(HIGH_SCHOOL_COURSE_CREDITS_TEMPLATE); print(f"WARN: Error loading session cache ({type(e_load).__name__}: {e_load}). Starting fresh."); traceback.print_exc()
+            else: 
+                self.session_cache = {}
+                self.high_school_credits_db = copy.deepcopy(HIGH_SCHOOL_COURSE_CREDITS_TEMPLATE)
+                print("INFO: No previous session cache file found. Starting fresh.")
+        except json.JSONDecodeError as e: 
+            self.session_cache = {}
+            self.high_school_credits_db = copy.deepcopy(HIGH_SCHOOL_COURSE_CREDITS_TEMPLATE)
+            print(f"WARN: Could not decode session cache ({e}). Starting fresh.")
+        except Exception as e_load: 
+            self.session_cache = {}
+            self.high_school_credits_db = copy.deepcopy(HIGH_SCHOOL_COURSE_CREDITS_TEMPLATE)
+            print(f"WARN: Error loading session cache ({type(e_load).__name__}: {e_load}). Starting fresh.")
+            traceback.print_exc()
 
         while True:
             current_run_cache_backup = copy.deepcopy(self.session_cache) 
