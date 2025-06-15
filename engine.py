@@ -137,6 +137,7 @@ def parse_teacher_availability(availability_str, num_periods):
                     if not is_morn and not is_aft: # unavailable whole day
                          for p_idx in range(num_periods): availability[day_full][p_idx] = False
         except Exception: pass # Ignore malformed constraint parts
+    print(f"DEBUG: Parsed availability for '{availability_str}': {availability}") # Added debug print
     return availability
 
 def parse_scheduling_constraint(constraint_str, num_periods):
@@ -503,9 +504,11 @@ class SchedulingEngine:
             
             current_schedule, is_successful_attempt, attempt_metrics = self._generate_single_schedule_attempt(attempt_seed_modifier=attempt_num, attempt_log_list=single_attempt_log_capture)
             
+            # Add this attempt's log to the main log regardless of success, for debugging
+            self.current_run_log.extend(single_attempt_log_capture)
+
             if current_schedule is None: # This indicates a fundamental issue, not just a failed placement
                 self._log_message("CRITICAL ERROR: Fundamental input issues prevent scheduling. Check detailed logs from attempt.", "ERROR")
-                self.current_run_log.extend(single_attempt_log_capture) # Add this attempt's log to main
                 return False
 
             if is_successful_attempt:
@@ -540,7 +543,10 @@ class SchedulingEngine:
                     single_attempt_log_capture_opt = []
                     current_schedule_opt, is_successful_attempt_opt, attempt_metrics_opt = \
                         self._generate_single_schedule_attempt(attempt_seed_modifier=attempt_num_opt + max_total_attempts, attempt_log_list=single_attempt_log_capture_opt) # Different seed base
-                    
+
+                    # Add this optimized attempt's log to the main log regardless of success
+                    self.current_run_log.extend(single_attempt_log_capture_opt)
+
                     if current_schedule_opt is None: self._log_message("CRITICAL ERROR during optimized run.", "ERROR"); break
 
                     if is_successful_attempt_opt:
@@ -663,6 +669,7 @@ class SchedulingEngine:
             
             grade_coverage_this_term = {g: {d: [False] * num_p_day for d in DAYS_OF_WEEK} for g in GRADES_REQUIRING_FULL_SCHEDULE}
             
+            log_fn(f"DEBUG (Term {term_idx}): Starting processing of {len(must_assign_items)} MUST ASSIGN items.", "DEBUG")
             # --- Process MUST ASSIGN items first ---
             for item in must_assign_items:
                 item_name, item_subj_area = item['name'], item.get('subject_area')
@@ -686,7 +693,8 @@ class SchedulingEngine:
                             all_specific_slots_available = False; break
                     if all_specific_slots_available: teacher_for_all = cand_name; break
                 
-                if not teacher_for_all: 
+                if not teacher_for_all:
+                    log_fn(f"DEBUG (Term {term_idx}): Failed to find qualified teacher for ASSIGN item '{item_name}'.", "DEBUG")
                     log_fn(f"CRIT (Term {term_idx}): No teacher for ASSIGN slots of '{item_name}'. Scheduling FAILED.", "ERROR")
                     return current_schedule, False, {'overall_completion_rate': 0, 'unmet_grade_slots_count': float('inf'), 'unmet_prep_teachers_count': float('inf')}
                 
@@ -711,7 +719,8 @@ class SchedulingEngine:
                             item_placements_this_term[item_name].append((day_c, period_c))
                             break
                     
-                    if not track_found_assign: 
+                    if not track_found_assign:
+                        log_fn(f"DEBUG (Term {term_idx}): No available track found for ASSIGN item '{item_name}' in slot {day_c}-P{period_c+1}.", "DEBUG")
                         log_fn(f"CRIT (Term {term_idx}): No track in ASSIGN slot {day_c}-P{period_c+1} for '{item_name}'. Scheduling FAILED.", "ERROR")
                         return current_schedule, False, {'overall_completion_rate': 0, 'unmet_grade_slots_count': float('inf'), 'unmet_prep_teachers_count': float('inf')}
                 
@@ -719,6 +728,7 @@ class SchedulingEngine:
                 teacher_teaching_periods_this_week_for_term[teacher_for_all] += slots_placed_ok_count_for_assign # Use actual placed count
                 log_fn(f"ASSIGNED (Term {term_idx}): '{item_name}' (T:{teacher_for_all}) to {slots_placed_ok_count_for_assign} slots. Load: {teacher_teaching_periods_this_week_for_term[teacher_for_all]}/{teacher_max_teaching_this_week.get(teacher_for_all, 'N/A')}", "DEBUG")
             
+            log_fn(f"DEBUG (Term {term_idx}): Starting processing of {len(flexible_items_all)} FLEXIBLE items.", "DEBUG")
             # --- Process FLEXIBLE items ---
             flexible_items_processed = sorted(flexible_items_all, key=lambda x: (x.get('periods_to_schedule_this_week',0), len(x.get('constraints',[]))), reverse=True)
             if attempt_seed_modifier > 0 : random.seed(datetime.datetime.now().microsecond + attempt_seed_modifier + term_idx); random.shuffle(flexible_items_processed)
@@ -764,8 +774,9 @@ class SchedulingEngine:
                                 candidate_slots.append({'day': day_name_flex, 'period': p_idx_flex, 'score': score})
                     
                     if not candidate_slots:
+                        log_fn(f"DEBUG (Term {term_idx}): No candidate slots found for instance of '{item_name}'.", "DEBUG")
                         log_fn(f"WARN (Term {term_idx}): No valid slots for instance of '{item_name}'. Placed {item.get('placed_this_term_count',0)}/{periods_to_place}.", "WARN")
-                        break 
+                        break
                     
                     random.shuffle(candidate_slots) 
                     candidate_slots.sort(key=lambda x: x['score'], reverse=True) # Prioritize slots that fill grade gaps
@@ -774,7 +785,11 @@ class SchedulingEngine:
                     for slot_info in candidate_slots:
                         day_flex, p_idx_flex = slot_info['day'], slot_info['period']
                         teacher_for_slot = self._find_qualified_teacher(item_subj_area, day_flex, p_idx_flex, teacher_busy_this_term, teacher_teaching_periods_this_week_for_term, teacher_max_teaching_this_week, item_teacher)
-                        
+
+                        if teacher_for_slot is None:
+                             log_fn(f"DEBUG (Term {term_idx}): No qualified teacher found for '{item_name}' in slot {day_flex}-P{p_idx_flex+1}.", "DEBUG")
+                             continue # No qualified teacher for this slot
+
                         if teacher_for_slot:
                             if not item_teacher: item_teacher = teacher_for_slot; item['teacher'] = item_teacher # Lock in teacher
                             
@@ -783,6 +798,7 @@ class SchedulingEngine:
                                     if current_schedule[term_idx][day_flex][p_idx_flex][track_idx_flex] is None:
                                         current_schedule[term_idx][day_flex][p_idx_flex][track_idx_flex] = (item_name, item_teacher)
                                         item_placements_this_term[item_name].append((day_flex, p_idx_flex))
+                                        log_fn(f"DEBUG (Term {term_idx}): Placed '{item_name}' (T:{item_teacher}) in slot {day_flex}-P{p_idx_flex+1}, Track {track_idx_flex+1}.", "DEBUG")
                                         teacher_busy_this_term[item_teacher].add((day_flex, p_idx_flex))
                                         item_scheduled_on_day_this_term[item_name].add(day_flex)
                                         teacher_teaching_periods_this_week_for_term[item_teacher] += 1
