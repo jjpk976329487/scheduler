@@ -1,0 +1,43 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.pyc
+*.pyd
+*.pyo
+*.egg-info/
+.pytest_cache/
+
+# Distribution / build
+/build/
+/dist/
+/*.egg
+/*.whl
+
+# Installer/packaging
+/pip-wheel-metadata/
+/wheels/
+
+# Logs and databases
+*.log
+*.sqlite3
+*.db
+*.tmp
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# IDE specific files
+.vscode/
+.idea/
+
+# Specific to this project
+*.pdf
+f.json
+g.json
+scheduler_session_cache.tmp
+scheduler_session_cache - Copy.tmp
+fixed shueduler.py
+scheduler.py
+SchedulerApp.spec
+implementation_plan.md
+requirements.txt
